@@ -6,38 +6,37 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="GymSmartTrack" />
-  <meta name="theme-color" content="#1a1a1a" />
+  <meta name="theme-color" content="#111111" />
   <title>GymSmartTrack</title>
   <link rel="manifest" href="manifest.json" />
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=Barlow+Condensed:wght@600;700;800;900&display=swap');
 
     :root {
-      /* ATOS brand palette */
-      --red:        #E30613;
-      --red-dark:   #B8000F;
-      --red-glow:   rgba(227,6,19,0.15);
-      --bg:         #111111;
-      --surface:    #1c1c1c;
-      --surface2:   #252525;
-      --surface3:   #2e2e2e;
-      --border:     #333333;
-      --border2:    #444444;
-      --text:       #f5f5f5;
-      --text-dim:   #888888;
-      --text-muted: #555555;
-      --white:      #ffffff;
-      --green:      #22c55e;
-      --green-dim:  rgba(34,197,94,0.12);
-      --amber:      #f59e0b;
-      --radius:     10px;
-      --radius-lg:  16px;
-      --font:       'Barlow', sans-serif;
-      --font-cond:  'Barlow Condensed', sans-serif;
+      --red:       #E30613;
+      --red-dark:  #B8000F;
+      --red-glow:  rgba(227,6,19,0.14);
+      --bg:        #111111;
+      --surface:   #1c1c1c;
+      --surface2:  #252525;
+      --surface3:  #2e2e2e;
+      --border:    #2e2e2e;
+      --border2:   #3d3d3d;
+      --text:      #f0f0f0;
+      --text-dim:  #888;
+      --text-faint:#555;
+      --green:     #22c55e;
+      --green-bg:  rgba(34,197,94,0.10);
+      --amber:     #f59e0b;
+      --chart-grey:#aaaaaa;
+      --radius:    10px;
+      --radius-lg: 16px;
+      --font:      'Barlow', sans-serif;
+      --font-cd:   'Barlow Condensed', sans-serif;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
     body {
       background: var(--bg);
@@ -47,52 +46,45 @@
       overflow-x: hidden;
     }
 
-    /* ── SYNC ── */
-    .sync-pill {
-      display: flex; align-items: center; gap: 6px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 20px; padding: 4px 10px;
-      pointer-events: none;
-    }
-    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); transition: background 0.3s; flex-shrink: 0; }
-    .sync-dot.ok { background: var(--green); }
-    .sync-dot.err { background: var(--red); }
-    .sync-dot.loading { background: var(--amber); animation: blink 1s infinite; }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .sync-label { font-size: 10px; color: var(--text-dim); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
-
-    /* ── TOP BAR ── */
+    /* ──────────────────────────────────────────
+       TOP BAR
+    ────────────────────────────────────────── */
     .topbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      position: fixed; top: 0; left: 0; right: 0; z-index: 60;
       background: rgba(17,17,17,0.97);
-      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
       border-bottom: 1px solid var(--border);
       padding-top: env(safe-area-inset-top);
     }
     .topbar-inner {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 16px; height: 52px; gap: 10px;
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 14px; height: 52px;
     }
-    .logo {
-      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-    }
-    .logo-mark {
-      width: 32px; height: 32px;
-      background: var(--red);
-      border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-cond);
-      font-size: 15px; font-weight: 800;
-      color: white; letter-spacing: -0.5px;
-      flex-shrink: 0;
-    }
-    .logo-text {
-      font-family: var(--font-cond);
-      font-size: 18px; font-weight: 800;
-      letter-spacing: 0.02em; line-height: 1;
-    }
-    .logo-text span { color: var(--red); }
 
+    /* ATOS-style logo */
+    .logo {
+      display: flex; align-items: center; gap: 9px; flex-shrink: 0; text-decoration: none;
+    }
+    .logo-triangle {
+      width: 30px; height: 30px; flex-shrink: 0;
+    }
+    .logo-wordmark {
+      display: flex; flex-direction: column; line-height: 1;
+    }
+    .logo-atos {
+      font-family: var(--font-cd);
+      font-size: 17px; font-weight: 900;
+      color: var(--red); letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .logo-sub {
+      font-family: var(--font-cd);
+      font-size: 9px; font-weight: 700;
+      color: var(--text-dim); letter-spacing: 0.12em;
+      text-transform: uppercase; margin-top: 1px;
+    }
+
+    /* Person chips */
     .person-scroll {
       display: flex; align-items: center; gap: 6px;
       overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0;
@@ -100,266 +92,279 @@
     .person-scroll::-webkit-scrollbar { display: none; }
     .person-chip {
       white-space: nowrap; flex-shrink: 0;
+      background: var(--surface2); border: 1px solid var(--border2);
+      border-radius: 5px; padding: 5px 11px;
+      font-family: var(--font); font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all 0.15s;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .person-chip.active { background: var(--red); color: #fff; border-color: var(--red); }
+    .person-chip.add-btn { background: none; border-style: dashed; color: var(--text-dim); }
+
+    /* Sync */
+    .sync-pill {
+      display: flex; align-items: center; gap: 5px;
       background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 6px; padding: 5px 12px;
-      font-size: 12px; font-weight: 700; cursor: pointer;
-      transition: all 0.15s; letter-spacing: 0.03em; text-transform: uppercase;
+      border-radius: 20px; padding: 4px 9px; flex-shrink: 0;
+      pointer-events: none;
     }
-    .person-chip.active {
-      background: var(--red); color: white; border-color: var(--red);
-    }
-    .person-chip.add-btn {
-      background: none; border-style: dashed; color: var(--text-dim);
-    }
-    .person-chip.add-btn:active { color: var(--red); border-color: var(--red); }
+    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); transition: background .3s; flex-shrink: 0; }
+    .sync-dot.ok  { background: var(--green); }
+    .sync-dot.err { background: var(--red); }
+    .sync-dot.loading { background: var(--amber); animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
+    .sync-label { font-size: 9px; font-weight: 700; color: var(--text-dim); letter-spacing: .05em; text-transform: uppercase; }
 
-    /* ── NAV ── */
-    .nav {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(17,17,17,0.97);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--border);
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .nav-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      background: none; border: none; color: var(--text-muted);
-      font-family: var(--font); font-size: 9px; font-weight: 700;
-      letter-spacing: 0.08em; text-transform: uppercase;
-      padding: 10px 0; cursor: pointer; transition: color 0.18s;
-      position: relative;
-    }
-    .nav-btn::before {
-      content: ''; position: absolute; top: 0; left: 20%; right: 20%;
-      height: 2px; background: var(--red); border-radius: 0 0 2px 2px;
-      opacity: 0; transition: opacity 0.18s;
-    }
-    .nav-btn.active { color: var(--red); }
-    .nav-btn.active::before { opacity: 1; }
-    .nav-btn svg { width: 20px; height: 20px; }
-
-    /* ── PAGES ── */
+    /* ──────────────────────────────────────────
+       PAGES
+    ────────────────────────────────────────── */
     .page {
       display: none;
-      padding: 0 16px;
-      padding-top: calc(52px + env(safe-area-inset-top) + 12px);
-      padding-bottom: calc(64px + env(safe-area-inset-bottom) + 12px);
+      padding: 0 15px;
+      padding-top: calc(52px + env(safe-area-inset-top) + 14px);
+      padding-bottom: calc(60px + env(safe-area-inset-bottom) + 14px);
       max-width: 640px; margin: 0 auto;
     }
     .page.active { display: block; }
 
-    /* ── PAGE HEADER ── */
     .page-header {
       display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 20px; padding-bottom: 16px;
+      margin-bottom: 18px; padding-bottom: 14px;
       border-bottom: 1px solid var(--border);
     }
     .page-title {
-      font-family: var(--font-cond);
-      font-size: 30px; font-weight: 800;
-      letter-spacing: 0.01em; line-height: 1;
-      text-transform: uppercase;
+      font-family: var(--font-cd); font-size: 28px; font-weight: 900;
+      text-transform: uppercase; letter-spacing: .02em; line-height: 1;
     }
-    .page-title span { color: var(--red); }
-    .page-sub { font-size: 12px; color: var(--text-dim); font-weight: 500; margin-top: 3px; }
+    .page-title em { color: var(--red); font-style: normal; }
+    .page-date { font-size: 11px; color: var(--text-dim); font-weight: 500; margin-top: 3px; }
 
-    /* ── SECTION LABEL ── */
+    /* ──────────────────────────────────────────
+       SECTION LABEL
+    ────────────────────────────────────────── */
     .section-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--text-muted);
-      margin-bottom: 10px; margin-top: 20px;
+      font-size: 10px; font-weight: 700; letter-spacing: .12em;
+      text-transform: uppercase; color: var(--text-faint);
+      margin: 18px 0 10px;
       display: flex; align-items: center; gap: 8px;
     }
-    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+    .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
 
-    /* ── CARDS ── */
+    /* ──────────────────────────────────────────
+       CARDS
+    ────────────────────────────────────────── */
     .card {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px;
-      transition: border-color 0.15s;
+      border-radius: var(--radius); padding: 13px 15px; margin-bottom: 9px;
     }
-    .card:active { border-color: var(--border2); }
-    .card.accent-left { border-left: 3px solid var(--red); }
+    .card.red-left { border-left: 3px solid var(--red); }
     .card-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .card-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
-    .card-meta { font-size: 11px; color: var(--text-dim); font-weight: 500; margin-top: 3px; }
+    .card-name { font-size: 15px; font-weight: 700; }
+    .card-meta { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
 
-    /* ── BADGES ── */
+    /* ──────────────────────────────────────────
+       BADGES
+    ────────────────────────────────────────── */
     .badge {
-      background: var(--surface3); color: var(--text);
-      font-size: 11px; font-weight: 700; padding: 4px 10px;
-      border-radius: 5px; font-family: var(--font-cond);
-      letter-spacing: 0.04em; white-space: nowrap;
+      font-family: var(--font-cd); font-size: 12px; font-weight: 800;
+      padding: 4px 10px; border-radius: 5px; white-space: nowrap;
+      letter-spacing: .03em;
     }
-    .badge.red { background: var(--red); color: white; }
-    .badge.green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
-    .badge.outline { background: none; border: 1px solid var(--border2); color: var(--text-dim); }
+    .badge.red   { background: var(--red); color: #fff; }
+    .badge.green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,.2); }
+    .badge.grey  { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border2); }
 
-    /* ── STAT GRID ── */
-    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+    /* ──────────────────────────────────────────
+       STAT GRID
+    ────────────────────────────────────────── */
+    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
     .stat-box {
       background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 12px 10px; text-align: center;
+      border-radius: var(--radius); padding: 11px 8px; text-align: center;
     }
-    .stat-val {
-      font-family: var(--font-cond); font-size: 22px; font-weight: 800;
-      color: var(--red); line-height: 1;
-    }
+    .stat-val { font-family: var(--font-cd); font-size: 22px; font-weight: 900; color: var(--red); line-height: 1; }
     .stat-val.green { color: var(--green); }
-    .stat-val.neutral { color: var(--text); }
-    .stat-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
+    .stat-val.white { color: var(--text); }
+    .stat-lbl { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); margin-top: 4px; }
 
-    /* ── BUTTONS ── */
+    /* ──────────────────────────────────────────
+       BUTTONS
+    ────────────────────────────────────────── */
     .btn {
-      background: var(--red); color: white; border: none;
+      background: var(--red); color: #fff; border: none;
       border-radius: var(--radius); font-family: var(--font);
-      font-weight: 700; font-size: 15px; padding: 14px 20px;
-      cursor: pointer; width: 100%;
-      transition: opacity 0.15s, transform 0.1s;
-      display: flex; align-items: center; justify-content: center; gap: 8px;
-      letter-spacing: 0.02em;
+      font-weight: 700; font-size: 15px; padding: 14px;
+      cursor: pointer; width: 100%; letter-spacing: .02em;
+      display: flex; align-items: center; justify-content: center; gap: 7px;
+      transition: opacity .15s, transform .1s;
     }
-    .btn:active { opacity: 0.85; transform: scale(0.98); }
-    .btn.secondary {
-      background: var(--surface2); color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn.sm {
-      font-size: 12px; padding: 8px 14px; width: auto;
-      border-radius: 7px; letter-spacing: 0.05em; text-transform: uppercase;
-    }
+    .btn:active { opacity: .85; transform: scale(.98); }
+    .btn.ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); }
+    .btn.sm { font-size: 12px; padding: 7px 13px; width: auto; border-radius: 6px; text-transform: uppercase; letter-spacing: .06em; }
 
-    /* ── INPUTS ── */
+    /* ──────────────────────────────────────────
+       INPUTS
+    ────────────────────────────────────────── */
     .input-group { margin-bottom: 12px; }
     .input-group label {
       display: block; font-size: 10px; font-weight: 700;
-      letter-spacing: 0.1em; text-transform: uppercase;
+      letter-spacing: .1em; text-transform: uppercase;
       color: var(--text-dim); margin-bottom: 6px;
     }
-    .input-group input, .input-group select {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    .input-group input,
+    .input-group select {
+      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
       border-radius: var(--radius); color: var(--text); font-family: var(--font);
-      font-size: 15px; font-weight: 500; padding: 12px 14px;
-      outline: none; transition: border-color 0.2s; appearance: none;
+      font-size: 16px; font-weight: 500; padding: 12px 13px;
+      outline: none; transition: border-color .2s, box-shadow .2s; appearance: none;
     }
-    .input-group input:focus, .input-group select:focus {
+    .input-group input:focus,
+    .input-group select:focus {
       border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow);
     }
     .input-row { display: flex; gap: 10px; }
     .input-row .input-group { flex: 1; }
 
-    /* ── LOG ITEMS ── */
-    .log-item {
+    /* ──────────────────────────────────────────
+       LOG ROWS
+    ────────────────────────────────────────── */
+    .log-row {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 11px 0; border-bottom: 1px solid var(--border);
+      padding: 10px 0; border-bottom: 1px solid var(--border);
     }
-    .log-item:last-child { border-bottom: none; }
-    .log-val { font-family: var(--font-cond); font-size: 18px; font-weight: 700; }
-    .log-sub { font-size: 11px; color: var(--text-dim); font-weight: 500; margin-top: 1px; }
-
+    .log-row:last-child { border-bottom: none; }
+    .log-kg { font-family: var(--font-cd); font-size: 18px; font-weight: 800; }
+    .log-reps { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
     .icon-btn {
       background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 7px; width: 32px; height: 32px;
+      border-radius: 7px; width: 31px; height: 31px;
       display: flex; align-items: center; justify-content: center;
-      cursor: pointer; flex-shrink: 0; color: var(--text-dim);
-      transition: all 0.15s;
+      cursor: pointer; flex-shrink: 0; color: var(--text-dim); transition: all .15s;
     }
-    .icon-btn:active { background: rgba(227,6,19,0.15); border-color: var(--red); color: var(--red); }
+    .icon-btn:active { background: var(--red-glow); border-color: var(--red); color: var(--red); }
 
-    /* ── TREND ── */
-    .trend-up { color: var(--green); font-size: 11px; font-weight: 700; }
-    .trend-down { color: var(--red); font-size: 11px; font-weight: 700; }
-    .trend-same { color: var(--text-dim); font-size: 11px; }
+    .trend-up   { color: var(--green); font-size: 11px; font-weight: 700; }
+    .trend-down { color: var(--red);   font-size: 11px; font-weight: 700; }
+    .trend-same { color: var(--text-faint); font-size: 11px; }
 
-    /* ── EMPTY ── */
-    .empty { text-align: center; padding: 48px 20px; }
+    /* ──────────────────────────────────────────
+       EMPTY STATE
+    ────────────────────────────────────────── */
+    .empty { text-align: center; padding: 50px 20px; }
     .empty-icon { font-size: 44px; margin-bottom: 12px; }
-    .empty h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .empty h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
     .empty p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
 
-    /* ── MODAL ── */
+    /* ──────────────────────────────────────────
+       MODAL
+    ────────────────────────────────────────── */
     .modal-overlay {
       position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+      background: rgba(0,0,0,.78); backdrop-filter: blur(5px);
       display: none; align-items: flex-end; justify-content: center;
     }
     .modal-overlay.open { display: flex; }
     .modal {
-      background: var(--surface); border: 1px solid var(--border2);
-      border-bottom: none;
+      background: var(--surface); border: 1px solid var(--border2); border-bottom: none;
       border-radius: 18px 18px 0 0;
-      padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+      padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
       width: 100%; max-width: 640px;
-      animation: slideUp 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+      animation: slideUp .24s cubic-bezier(.32,.72,0,1);
       max-height: 92dvh; overflow-y: auto;
     }
-    @keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
-    .modal-handle {
-      width: 36px; height: 4px; background: var(--border2);
-      border-radius: 2px; margin: 0 auto 18px;
-    }
-    .modal-title {
-      font-family: var(--font-cond); font-size: 22px; font-weight: 800;
-      text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 18px;
-    }
-    .modal-title span { color: var(--red); }
+    @keyframes slideUp { from{transform:translateY(100%)} to{transform:none} }
+    .modal-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto 16px; }
+    .modal-title { font-family: var(--font-cd); font-size: 22px; font-weight: 900; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 16px; }
+    .modal-title em { color: var(--red); font-style: normal; }
 
-    /* ── CHART ── */
+    /* ──────────────────────────────────────────
+       CHART
+    ────────────────────────────────────────── */
     .chart-wrap {
       background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px;
+      border-radius: var(--radius-lg); padding: 15px; margin-bottom: 12px;
     }
-    .chart-title { font-family: var(--font-cond); font-size: 16px; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
-    .chart-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
+    .chart-title { font-family: var(--font-cd); font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; }
+    .chart-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; margin-bottom: 14px; }
+    .chart-legend { display: flex; gap: 16px; margin-bottom: 12px; }
+    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: var(--text-dim); }
+    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
     canvas { width: 100% !important; }
 
-    /* ── DIVIDER ── */
-    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+    /* ──────────────────────────────────────────
+       NAV
+    ────────────────────────────────────────── */
+    .nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(17,17,17,.97);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid var(--border);
+      display: grid; grid-template-columns: repeat(3,1fr);
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    .nav-btn {
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; color: var(--text-faint);
+      font-family: var(--font); font-size: 9px; font-weight: 700;
+      letter-spacing: .08em; text-transform: uppercase;
+      padding: 10px 0; cursor: pointer; transition: color .18s;
+      position: relative;
+    }
+    .nav-btn::before {
+      content:''; position: absolute; top: 0; left: 25%; right: 25%;
+      height: 2px; background: var(--red); border-radius: 0 0 2px 2px;
+      opacity: 0; transition: opacity .18s;
+    }
+    .nav-btn.active { color: var(--red); }
+    .nav-btn.active::before { opacity: 1; }
+    .nav-btn svg { width: 20px; height: 20px; }
 
-    /* ── LOADING ── */
+    /* ──────────────────────────────────────────
+       LOADING
+    ────────────────────────────────────────── */
     #loadingScreen {
       position: fixed; inset: 0; background: var(--bg);
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      z-index: 999; gap: 20px;
+      z-index: 999; gap: 16px;
     }
-    .load-logo {
-      width: 72px; height: 72px; background: var(--red); border-radius: 16px;
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-cond); font-size: 28px; font-weight: 900; color: white;
-    }
-    .load-name { font-family: var(--font-cond); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
-    .load-name span { color: var(--red); }
-    .load-sub { font-size: 12px; color: var(--text-dim); font-weight: 500; }
-    .spinner { width: 28px; height: 28px; border: 2px solid var(--border2); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── TODAY HERO ── */
-    .today-date {
-      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
-      text-transform: uppercase; color: var(--text-dim);
-      margin-bottom: 4px;
-    }
+    .spinner { width: 28px; height: 28px; border: 2px solid var(--border2); border-top-color: var(--red); border-radius: 50%; animation: spin .7s linear infinite; }
+    @keyframes spin { to{transform:rotate(360deg)} }
+    .load-label { font-size: 12px; color: var(--text-dim); font-weight: 500; }
   </style>
 </head>
 <body>
 
-<!-- LOADING -->
+<!-- ── LOADING ──────────────────────────────────────────────────── -->
 <div id="loadingScreen">
-  <div class="load-logo">GST</div>
-  <div class="load-name">Gym<span>Smart</span>Track</div>
+  <!-- ATOS triangle SVG logo, large -->
+  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="32,4 60,58 4,58" fill="#E30613"/>
+    <polygon points="32,18 48,50 16,50" fill="#c0000f" opacity="0.5"/>
+  </svg>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:.1em;color:#f0f0f0">
+    GYM<span style="color:#E30613">SMART</span>TRACK
+  </div>
   <div class="spinner"></div>
-  <div class="load-sub">Connessione al database…</div>
+  <div class="load-label">Connessione al database…</div>
 </div>
 
-<!-- TOP BAR -->
+<!-- ── TOP BAR ──────────────────────────────────────────────────── -->
 <div class="topbar">
   <div class="topbar-inner">
+    <!-- ATOS-style triangle logo -->
     <div class="logo">
-      <div class="logo-mark">GST</div>
-      <div class="logo-text">Gym<span>Smart</span>Track</div>
+      <svg class="logo-triangle" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="15,2 28,27 2,27" fill="#E30613"/>
+        <polygon points="15,10 22,24 8,24" fill="#c0000f" opacity="0.45"/>
+      </svg>
+      <div class="logo-wordmark">
+        <div class="logo-atos">GymSmartTrack</div>
+        <div class="logo-sub">by ATOS SPA</div>
+      </div>
     </div>
+
     <div class="person-scroll" id="personBar"></div>
+
     <div class="sync-pill">
       <div class="sync-dot" id="syncDot"></div>
       <div class="sync-label" id="syncLabel">…</div>
@@ -367,33 +372,33 @@
   </div>
 </div>
 
-<!-- PAGES -->
+<!-- ── PAGE: OGGI ────────────────────────────────────────────────── -->
 <div class="page active" id="page-log">
   <div class="page-header">
     <div>
-      <div class="today-date" id="todayDateLabel"></div>
-      <div class="page-title">Allenamento<br><span>di oggi</span></div>
+      <div class="page-date" id="todayLabel"></div>
+      <div class="page-title">Allenamento<br><em>di oggi</em></div>
     </div>
     <button class="btn sm" onclick="openModal('addLog')">+ Aggiungi</button>
   </div>
   <div id="todayList"></div>
 </div>
 
+<!-- ── PAGE: STORICO ─────────────────────────────────────────────── -->
 <div class="page" id="page-history">
   <div class="page-header">
     <div>
-      <div class="page-title">Storico<br><span>esercizi</span></div>
-      <div class="page-sub">Tutti gli allenamenti registrati</div>
+      <div class="page-title">Storico<br><em>esercizi</em></div>
     </div>
   </div>
   <div id="exerciseList"></div>
 </div>
 
+<!-- ── PAGE: GRAFICI ─────────────────────────────────────────────── -->
 <div class="page" id="page-charts">
   <div class="page-header">
     <div>
-      <div class="page-title">Grafici<br><span>progressi</span></div>
-      <div class="page-sub">Analisi delle performance</div>
+      <div class="page-title">Grafici<br><em>progressi</em></div>
     </div>
   </div>
   <div class="input-group">
@@ -403,71 +408,92 @@
   <div id="chartArea"></div>
 </div>
 
-<!-- NAV -->
+<!-- ── NAV ──────────────────────────────────────────────────────── -->
 <nav class="nav">
-  <button class="nav-btn active" onclick="showPage('log', this)">
+  <button class="nav-btn active" onclick="showPage('log',this)">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
     Oggi
   </button>
-  <button class="nav-btn" onclick="showPage('history', this)">
+  <button class="nav-btn" onclick="showPage('history',this)">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10M4 18h6"/></svg>
     Storico
   </button>
-  <button class="nav-btn" onclick="showPage('charts', this)">
+  <button class="nav-btn" onclick="showPage('charts',this)">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
     Grafici
   </button>
 </nav>
 
-<!-- MODAL: ADD LOG -->
+<!-- ── MODAL: AGGIUNGI SERIE ─────────────────────────────────────── -->
 <div class="modal-overlay" id="modal-addLog">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title">Nuova <span>serie</span></div>
+    <div class="modal-title">Nuova <em>serie</em></div>
+
     <div class="input-group">
       <label>Esercizio</label>
-      <input type="text" id="newExercise" placeholder="es. Panca piana, Squat, Stacchi…" list="exerciseSuggestions" autocomplete="off" />
+      <input type="text" id="newExercise" placeholder="es. Panca piana, Squat, Stacchi…"
+             list="exerciseSuggestions" autocomplete="off" />
       <datalist id="exerciseSuggestions"></datalist>
     </div>
+
     <div class="input-row">
-      <div class="input-group"><label>Peso (kg)</label><input type="number" id="newWeight" placeholder="80" min="0" step="0.5" inputmode="decimal" /></div>
-      <div class="input-group"><label>Reps</label><input type="number" id="newReps" placeholder="8" min="1" inputmode="numeric" /></div>
-      <div class="input-group"><label>Serie</label><input type="number" id="newSets" placeholder="3" min="1" inputmode="numeric" /></div>
+      <div class="input-group">
+        <label>Carico (kg)</label>
+        <input type="number" id="newWeight" placeholder="80" min="0" step="0.5" inputmode="decimal" />
+      </div>
+      <div class="input-group">
+        <label>Ripetizioni</label>
+        <input type="number" id="newReps" placeholder="8" min="1" inputmode="numeric" />
+      </div>
     </div>
-    <div class="input-group"><label>Data</label><input type="date" id="newDate" /></div>
+
+    <div class="input-group">
+      <label>Data</label>
+      <input type="date" id="newDate" />
+    </div>
+
     <button class="btn" onclick="saveLog()">Salva serie</button>
     <div style="height:8px"></div>
-    <button class="btn secondary" onclick="closeModal('addLog')">Annulla</button>
+    <button class="btn ghost" onclick="closeModal('addLog')">Annulla</button>
   </div>
 </div>
 
-<!-- MODAL: ADD PERSON -->
+<!-- ── MODAL: AGGIUNGI PERSONA ───────────────────────────────────── -->
 <div class="modal-overlay" id="modal-addPerson">
   <div class="modal">
     <div class="modal-handle"></div>
-    <div class="modal-title">Aggiungi <span>persona</span></div>
-    <div class="input-group"><label>Nome completo</label><input type="text" id="newPersonName" placeholder="es. Mario Rossi" /></div>
+    <div class="modal-title">Aggiungi <em>persona</em></div>
+    <div class="input-group">
+      <label>Nome</label>
+      <input type="text" id="newPersonName" placeholder="es. Mario Rossi" />
+    </div>
     <button class="btn" onclick="savePerson()">Aggiungi</button>
     <div style="height:8px"></div>
-    <button class="btn secondary" onclick="closeModal('addPerson')">Annulla</button>
+    <button class="btn ghost" onclick="closeModal('addPerson')">Annulla</button>
   </div>
 </div>
 
-<!-- MODAL: EXERCISE DETAIL -->
+<!-- ── MODAL: DETTAGLIO ESERCIZIO ────────────────────────────────── -->
 <div class="modal-overlay" id="modal-exerciseDetail">
   <div class="modal">
     <div class="modal-handle"></div>
     <div class="modal-title" id="detailTitle"></div>
     <div id="detailContent"></div>
-    <button class="btn secondary" onclick="closeModal('exerciseDetail')">Chiudi</button>
+    <button class="btn ghost" onclick="closeModal('exerciseDetail')">Chiudi</button>
   </div>
 </div>
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
+<!-- Firebase -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getFirestore, collection, doc, addDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import {
+    getFirestore, collection, doc, addDoc, deleteDoc,
+    onSnapshot, query, orderBy
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyC25vfkc0C22e2OX5gha98sYDnA0l43NFA",
@@ -479,120 +505,128 @@
   };
 
   const fbApp = initializeApp(firebaseConfig);
-  const db = getFirestore(fbApp);
+  const db    = getFirestore(fbApp);
 
-  let persons = [];
-  let logs = [];
+  let persons       = [];
+  let logs          = [];
   let currentPerson = localStorage.getItem('gymtrack_person') || null;
-  let chartInstance = null;
+  let chartInst     = null;
 
-  // ── UTILS ──────────────────────────────────────────────────────────
-  function today() { return new Date().toISOString().split('T')[0]; }
-  function fmtDate(d) {
+  // ── UTILS ────────────────────────────────────────────────────────
+  const today = () => new Date().toISOString().split('T')[0];
+
+  function fmtFull(d) {
     const [y,m,dd] = d.split('-');
-    const months = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
-    return `${parseInt(dd)} ${months[parseInt(m)-1]} ${y}`;
+    const M = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+    return `${parseInt(dd)} ${M[parseInt(m)-1]} ${y}`;
   }
-  function fmtDateShort(d) { const [y,m,dd] = d.split('-'); return `${dd}/${m}`; }
-  function currentLogs() { return logs.filter(l => l.personId === currentPerson); }
+  function fmtShort(d) { const [,m,dd] = d.split('-'); return `${parseInt(dd)}/${parseInt(m)}`; }
+
+  const currentLogs = () => logs.filter(l => l.personId === currentPerson);
+
   function bestBefore(exercise, dateStr) {
-    const prev = currentLogs().filter(l => l.exercise === exercise && l.date < dateStr).sort((a,b) => b.date.localeCompare(a.date));
-    return prev.length ? prev[0].weight : null;
+    const prev = currentLogs()
+      .filter(l => l.exercise === exercise && l.date < dateStr)
+      .sort((a,b) => b.date.localeCompare(a.date));
+    return prev.length ? prev[0] : null;
   }
 
-  // ── SYNC STATUS ────────────────────────────────────────────────────
-  function setSync(state, label) {
-    document.getElementById('syncDot').className = 'sync-dot ' + state;
-    document.getElementById('syncLabel').textContent = label;
+  // ── SYNC STATUS ──────────────────────────────────────────────────
+  function setSync(s, lbl) {
+    document.getElementById('syncDot').className = 'sync-dot ' + s;
+    document.getElementById('syncLabel').textContent = lbl;
   }
 
-  // ── TODAY LABEL ────────────────────────────────────────────────────
-  function setTodayLabel() {
-    const now = new Date();
-    const days = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+  // ── TODAY LABEL ──────────────────────────────────────────────────
+  (() => {
+    const n = new Date();
+    const days = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
     const months = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
-    document.getElementById('todayDateLabel').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
-  }
-  setTodayLabel();
+    document.getElementById('todayLabel').textContent =
+      `${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
+  })();
 
-  // ── LISTENERS ──────────────────────────────────────────────────────
+  // ── FIREBASE LISTENERS ───────────────────────────────────────────
   onSnapshot(collection(db, 'persons'), snap => {
-    persons = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.createdAt||0)-(b.createdAt||0));
-    if (!currentPerson || !persons.find(p => p.id === currentPerson)) {
-      if (persons.length === 0) { addDoc(collection(db, 'persons'), { name: 'Io', createdAt: Date.now() }); return; }
+    persons = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+    if (!currentPerson || !persons.find(p=>p.id===currentPerson)) {
+      if (!persons.length) { addDoc(collection(db,'persons'),{name:'Io',createdAt:Date.now()}); return; }
       currentPerson = persons[0].id;
       localStorage.setItem('gymtrack_person', currentPerson);
     }
     document.getElementById('loadingScreen').style.display = 'none';
-    setSync('ok', 'online');
+    setSync('ok','online');
     renderPersonBar(); renderToday(); renderHistory(); populateSuggestions();
-  }, () => { setSync('err', 'offline'); document.getElementById('loadingScreen').style.display = 'none'; });
+  }, () => { setSync('err','offline'); document.getElementById('loadingScreen').style.display='none'; });
 
-  onSnapshot(query(collection(db, 'logs'), orderBy('date', 'asc')), snap => {
-    logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    setSync('ok', 'online');
+  onSnapshot(query(collection(db,'logs'), orderBy('date','asc')), snap => {
+    logs = snap.docs.map(d=>({id:d.id,...d.data()}));
+    setSync('ok','online');
     renderToday(); renderHistory(); populateSuggestions();
     if (document.getElementById('page-charts').classList.contains('active')) renderChartPage();
-  }, () => setSync('err', 'offline'));
+  }, ()=>setSync('err','offline'));
 
-  // ── NAVIGATION ─────────────────────────────────────────────────────
+  // ── NAVIGATION ───────────────────────────────────────────────────
   window.showPage = (id, btn) => {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('page-' + id).classList.add('active');
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById('page-'+id).classList.add('active');
     btn.classList.add('active');
-    if (id === 'charts') renderChartPage();
-    if (id === 'history') renderHistory();
-    if (id === 'log') renderToday();
+    if (id==='charts')  renderChartPage();
+    if (id==='history') renderHistory();
+    if (id==='log')     renderToday();
   };
 
-  // ── RENDER PERSON BAR ──────────────────────────────────────────────
+  // ── PERSON BAR ───────────────────────────────────────────────────
   function renderPersonBar() {
     document.getElementById('personBar').innerHTML =
-      persons.map(p => `<div class="person-chip ${p.id===currentPerson?'active':''}" onclick="selectPerson('${p.id}')">${p.name}</div>`).join('')
+      persons.map(p=>`<div class="person-chip ${p.id===currentPerson?'active':''}" onclick="selectPerson('${p.id}')">${p.name}</div>`).join('')
       + `<div class="person-chip add-btn" onclick="openModal('addPerson')">+ Persona</div>`;
   }
 
-  // ── RENDER TODAY ───────────────────────────────────────────────────
+  // ── TODAY ────────────────────────────────────────────────────────
   function renderToday() {
     const list = document.getElementById('todayList');
-    const t = today();
-    const todayLogs = currentLogs().filter(l => l.date === t);
+    const t    = today();
+    const tl   = currentLogs().filter(l=>l.date===t);
 
-    if (!todayLogs.length) {
-      list.innerHTML = `<div class="empty"><div class="empty-icon">🏋️</div><h3>Nessun esercizio oggi</h3><p>Tocca "+ Aggiungi" per registrare<br>il tuo primo esercizio di oggi.</p></div>`;
+    if (!tl.length) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">🏋️</div><h3>Nessun esercizio oggi</h3><p>Tocca "+ Aggiungi" per iniziare.</p></div>`;
       return;
     }
 
     const grouped = {};
-    todayLogs.forEach(l => { if (!grouped[l.exercise]) grouped[l.exercise]=[]; grouped[l.exercise].push(l); });
+    tl.forEach(l=>{ if(!grouped[l.exercise]) grouped[l.exercise]=[]; grouped[l.exercise].push(l); });
 
-    list.innerHTML = Object.entries(grouped).map(([ex, entries]) => {
+    list.innerHTML = Object.entries(grouped).map(([ex, entries])=>{
       const last = entries[entries.length-1];
       const prev = bestBefore(ex, t);
-      const diff = prev !== null ? +(last.weight - prev).toFixed(1) : null;
       let trendHtml = '';
-      if (diff !== null) {
-        if (diff > 0) trendHtml = `<span class="trend-up">▲ +${diff} kg</span>`;
+      if (prev) {
+        const diff = +(last.weight - prev.weight).toFixed(1);
+        if      (diff > 0) trendHtml = `<span class="trend-up">▲ +${diff} kg</span>`;
         else if (diff < 0) trendHtml = `<span class="trend-down">▼ ${diff} kg</span>`;
-        else trendHtml = `<span class="trend-same">= stabile</span>`;
+        else               trendHtml = `<span class="trend-same">= stabile</span>`;
       }
-      const rows = entries.map(e => `
-        <div class="log-item">
+      const rows = entries.map(e=>`
+        <div class="log-row">
           <div>
-            <div class="log-val">${e.weight} kg</div>
-            <div class="log-sub">${e.sets||1} serie × ${e.reps} reps</div>
+            <div class="log-kg">${e.weight} kg</div>
+            <div class="log-reps">${e.reps} ripetizioni</div>
           </div>
           <button class="icon-btn" onclick="deleteLog('${e.id}')">
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
+            </svg>
           </button>
         </div>`).join('');
+
       return `
-        <div class="card accent-left">
+        <div class="card red-left">
           <div class="card-row">
             <div>
               <div class="card-name">${ex}</div>
-              <div class="card-meta">${entries.length} serie registrate &nbsp;${trendHtml}</div>
+              <div class="card-meta">${entries.length} serie &nbsp;${trendHtml}</div>
             </div>
             <div class="badge red">${last.weight} kg</div>
           </div>
@@ -601,194 +635,248 @@
     }).join('');
   }
 
-  // ── RENDER HISTORY ─────────────────────────────────────────────────
+  // ── HISTORY ──────────────────────────────────────────────────────
   function renderHistory() {
     const list = document.getElementById('exerciseList');
-    const myLogs = currentLogs();
-    if (!myLogs.length) {
-      list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><h3>Nessuno storico</h3><p>Aggiungi il tuo primo allenamento<br>dalla scheda "Oggi".</p></div>`;
+    const ml   = currentLogs();
+    if (!ml.length) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><h3>Nessuno storico</h3><p>Aggiungi il primo allenamento.</p></div>`;
       return;
     }
-    const exercises = [...new Set(myLogs.map(l => l.exercise))].sort();
-    list.innerHTML = `<div class="section-label">${exercises.length} esercizi tracciati</div>` + exercises.map(ex => {
-      const exLogs = myLogs.filter(l => l.exercise===ex).sort((a,b) => b.date.localeCompare(a.date));
-      const pr = Math.max(...exLogs.map(l => l.weight));
-      const last = exLogs[0];
-      const first = exLogs[exLogs.length-1];
-      const progress = +(pr - first.weight).toFixed(1);
-      return `
-        <div class="card" onclick="showDetail('${ex}')" style="cursor:pointer">
-          <div class="card-row">
-            <div style="min-width:0">
-              <div class="card-name">${ex}</div>
-              <div class="card-meta">${exLogs.length} sessioni &nbsp;·&nbsp; ultimo ${fmtDate(last.date)}</div>
+    const exercises = [...new Set(ml.map(l=>l.exercise))].sort();
+    list.innerHTML = `<div class="section-label">${exercises.length} esercizi</div>` +
+      exercises.map(ex=>{
+        const xl   = ml.filter(l=>l.exercise===ex).sort((a,b)=>b.date.localeCompare(a.date));
+        const pr   = Math.max(...xl.map(l=>l.weight));
+        const maxR = Math.max(...xl.map(l=>l.reps));
+        return `
+          <div class="card" onclick="showDetail('${ex}')" style="cursor:pointer">
+            <div class="card-row">
+              <div>
+                <div class="card-name">${ex}</div>
+                <div class="card-meta">${xl.length} sessioni &nbsp;·&nbsp; ultimo ${fmtFull(xl[0].date)}</div>
+              </div>
+              <div style="display:flex;gap:6px">
+                <div class="badge red">${pr} kg</div>
+                <div class="badge grey">${maxR} reps</div>
+              </div>
             </div>
-            <div style="display:flex;gap:6px;flex-shrink:0">
-              <div class="badge green">PR ${pr} kg</div>
-            </div>
-          </div>
-        </div>`;
-    }).join('');
+          </div>`;
+      }).join('');
   }
 
-  // ── DETAIL MODAL ───────────────────────────────────────────────────
+  // ── DETAIL MODAL ─────────────────────────────────────────────────
   window.showDetail = ex => {
-    const myLogs = currentLogs().filter(l => l.exercise===ex).sort((a,b) => b.date.localeCompare(a.date));
-    const pr = Math.max(...myLogs.map(l => l.weight));
-    const first = myLogs[myLogs.length-1];
-    const progress = +(pr - first.weight).toFixed(1);
+    const ml  = currentLogs().filter(l=>l.exercise===ex).sort((a,b)=>b.date.localeCompare(a.date));
+    const pr  = Math.max(...ml.map(l=>l.weight));
+    const maxR= Math.max(...ml.map(l=>l.reps));
+    const progKg  = +(pr - ml[ml.length-1].weight).toFixed(1);
 
-    document.getElementById('detailTitle').innerHTML = ex.replace(/(\s)/g,'<br>');
+    document.getElementById('detailTitle').innerHTML = `<em>${ex}</em>`;
     document.getElementById('detailContent').innerHTML = `
       <div class="stat-grid" style="margin-bottom:16px">
-        <div class="stat-box"><div class="stat-val">${pr} kg</div><div class="stat-lbl">Record PR</div></div>
-        <div class="stat-box"><div class="stat-val ${progress>=0?'green':''}">${progress>=0?'+':''}${progress}</div><div class="stat-lbl">Progresso</div></div>
-        <div class="stat-box"><div class="stat-val neutral">${myLogs.length}</div><div class="stat-lbl">Sessioni</div></div>
+        <div class="stat-box"><div class="stat-val">${pr} kg</div><div class="stat-lbl">Carico PR</div></div>
+        <div class="stat-box"><div class="stat-val ${progKg>=0?'green':''}">${progKg>=0?'+':''}${progKg}</div><div class="stat-lbl">Progresso</div></div>
+        <div class="stat-box"><div class="stat-val white">${ml.length}</div><div class="stat-lbl">Sessioni</div></div>
       </div>
       <div class="section-label">Tutte le sessioni</div>
-      ${myLogs.map(l => `
-        <div class="log-item">
-          <div class="log-sub" style="font-size:12px">${fmtDate(l.date)}</div>
+      ${ml.map(l=>`
+        <div class="log-row">
+          <div class="log-reps" style="font-size:12px">${fmtFull(l.date)}</div>
           <div style="text-align:right">
-            <div class="log-val">${l.weight} kg</div>
-            <div class="log-sub">${l.sets||1}×${l.reps} reps</div>
+            <div class="log-kg">${l.weight} kg</div>
+            <div class="log-reps">${l.reps} reps</div>
           </div>
         </div>`).join('')}
       <div style="height:16px"></div>`;
     openModal('exerciseDetail');
   };
 
-  // ── CHARTS ─────────────────────────────────────────────────────────
+  // ── CHARTS (dual axis: kg + reps) ────────────────────────────────
   function renderChartPage() {
     const sel = document.getElementById('chartExerciseSelect');
-    const exercises = [...new Set(currentLogs().map(l => l.exercise))].sort();
+    const exercises = [...new Set(currentLogs().map(l=>l.exercise))].sort();
     sel.innerHTML = exercises.length
-      ? exercises.map(e => `<option value="${e}">${e}</option>`).join('')
+      ? exercises.map(e=>`<option value="${e}">${e}</option>`).join('')
       : '<option value="">Nessun dato ancora</option>';
     renderChart();
   }
 
   window.renderChart = () => {
-    const area = document.getElementById('chartArea');
+    const area     = document.getElementById('chartArea');
     const exercise = document.getElementById('chartExerciseSelect').value;
     if (!exercise) {
-      area.innerHTML = `<div class="empty"><div class="empty-icon">📈</div><h3>Nessun dato</h3><p>Aggiungi allenamenti per vedere<br>i tuoi progressi nel tempo.</p></div>`;
+      area.innerHTML = `<div class="empty"><div class="empty-icon">📈</div><h3>Nessun dato</h3><p>Aggiungi allenamenti per vedere i progressi.</p></div>`;
       return;
     }
 
-    const myLogs = currentLogs().filter(l => l.exercise===exercise).sort((a,b) => a.date.localeCompare(b.date));
+    // Group by date: max weight, max reps
+    const ml = currentLogs().filter(l=>l.exercise===exercise).sort((a,b)=>a.date.localeCompare(b.date));
     const byDate = {};
-    myLogs.forEach(l => { if (!byDate[l.date] || l.weight > byDate[l.date]) byDate[l.date] = l.weight; });
+    ml.forEach(l=>{
+      if (!byDate[l.date]) byDate[l.date] = {weight:0, reps:0};
+      if (l.weight > byDate[l.date].weight) byDate[l.date].weight = l.weight;
+      if (l.reps   > byDate[l.date].reps)   byDate[l.date].reps   = l.reps;
+    });
 
-    const labels = Object.keys(byDate).map(fmtDateShort);
-    const data = Object.values(byDate);
-    const pr = Math.max(...data);
-    const progress = +(data[data.length-1] - data[0]).toFixed(1);
-    const sessions = data.length;
+    const labels  = Object.keys(byDate).map(fmtShort);
+    const weights = Object.values(byDate).map(v=>v.weight);
+    const reps    = Object.values(byDate).map(v=>v.reps);
+
+    const prKg   = Math.max(...weights);
+    const prReps = Math.max(...reps);
+    const progKg = +(weights[weights.length-1] - weights[0]).toFixed(1);
 
     area.innerHTML = `
       <div class="stat-grid" style="margin-bottom:14px">
-        <div class="stat-box"><div class="stat-val">${pr} kg</div><div class="stat-lbl">Record</div></div>
-        <div class="stat-box"><div class="stat-val ${progress>=0?'green':''}">${progress>=0?'+':''}${progress}</div><div class="stat-lbl">Progresso</div></div>
-        <div class="stat-box"><div class="stat-val neutral">${sessions}</div><div class="stat-lbl">Sessioni</div></div>
+        <div class="stat-box"><div class="stat-val">${prKg} kg</div><div class="stat-lbl">Carico max</div></div>
+        <div class="stat-box"><div class="stat-val ${progKg>=0?'green':''}">${progKg>=0?'+':''}${progKg}</div><div class="stat-lbl">Progresso</div></div>
+        <div class="stat-box"><div class="stat-val white">${prReps}</div><div class="stat-lbl">Max reps</div></div>
       </div>
       <div class="chart-wrap">
         <div class="chart-title">${exercise}</div>
-        <div class="chart-meta">Peso massimo per sessione · kg</div>
-        <canvas id="myChart" height="220"></canvas>
+        <div class="chart-meta">Evoluzione carico e ripetizioni nel tempo</div>
+        <div class="chart-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:#E30613"></div>Carico (kg)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#aaaaaa"></div>Ripetizioni</div>
+        </div>
+        <canvas id="myChart" height="240"></canvas>
       </div>`;
 
-    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+    if (chartInst) { chartInst.destroy(); chartInst = null; }
 
-    Chart.defaults.color = '#888888';
-    chartInstance = new Chart(document.getElementById('myChart').getContext('2d'), {
-      type: 'line',
+    chartInst = new Chart(document.getElementById('myChart').getContext('2d'), {
       data: {
         labels,
-        datasets: [{
-          data,
-          borderColor: '#E30613',
-          backgroundColor: (ctx) => {
-            const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 200);
-            gradient.addColorStop(0, 'rgba(227,6,19,0.25)');
-            gradient.addColorStop(1, 'rgba(227,6,19,0)');
-            return gradient;
+        datasets: [
+          {
+            type: 'line',
+            label: 'Carico (kg)',
+            data: weights,
+            yAxisID: 'yKg',
+            borderColor: '#E30613',
+            backgroundColor: ctx => {
+              const g = ctx.chart.ctx.createLinearGradient(0,0,0,220);
+              g.addColorStop(0,'rgba(227,6,19,0.22)');
+              g.addColorStop(1,'rgba(227,6,19,0)');
+              return g;
+            },
+            pointBackgroundColor: '#E30613',
+            pointBorderColor: '#1c1c1c',
+            pointBorderWidth: 2,
+            pointRadius: 5,
+            pointHoverRadius: 7,
+            borderWidth: 2.5,
+            tension: 0.3,
+            fill: true,
+            order: 1,
           },
-          pointBackgroundColor: '#E30613',
-          pointBorderColor: '#1c1c1c',
-          pointBorderWidth: 2,
-          pointRadius: 5,
-          pointHoverRadius: 7,
-          borderWidth: 2.5,
-          tension: 0.3,
-          fill: true,
-        }]
+          {
+            type: 'line',
+            label: 'Ripetizioni',
+            data: reps,
+            yAxisID: 'yReps',
+            borderColor: '#aaaaaa',
+            backgroundColor: 'rgba(170,170,170,0.06)',
+            pointBackgroundColor: '#aaaaaa',
+            pointBorderColor: '#1c1c1c',
+            pointBorderWidth: 2,
+            pointRadius: 4,
+            pointHoverRadius: 6,
+            borderWidth: 2,
+            tension: 0.3,
+            fill: true,
+            borderDash: [5,3],
+            order: 2,
+          }
+        ]
       },
       options: {
         responsive: true,
+        interaction: { mode: 'index', intersect: false },
         plugins: {
           legend: { display: false },
           tooltip: {
             backgroundColor: '#252525',
-            borderColor: '#444',
+            borderColor: '#3d3d3d',
             borderWidth: 1,
             titleColor: '#888',
-            titleFont: { family: 'Barlow', size: 11, weight: '600' },
-            bodyColor: '#E30613',
-            bodyFont: { family: 'Barlow Condensed', size: 16, weight: '700' },
+            titleFont: { family:'Barlow', size:11, weight:'600' },
             padding: 10,
-            callbacks: { label: c => ` ${c.raw} kg` }
+            callbacks: {
+              label: c => c.dataset.yAxisID === 'yKg'
+                ? `  Carico: ${c.raw} kg`
+                : `  Reps: ${c.raw}`
+            }
           }
         },
         scales: {
           x: {
-            ticks: { color: '#666', font: { family: 'Barlow', size: 10 }, maxRotation: 45 },
-            grid: { color: '#252525' },
-            border: { color: '#333' }
+            ticks: { color:'#666', font:{family:'Barlow',size:10}, maxRotation:45 },
+            grid:  { color:'#222' },
+            border:{ color:'#333' }
           },
-          y: {
-            ticks: { color: '#666', font: { family: 'Barlow', size: 11 }, callback: v => v + ' kg' },
-            grid: { color: '#252525' },
-            border: { color: '#333' }
+          yKg: {
+            type: 'linear',
+            position: 'left',
+            ticks: { color:'#E30613', font:{family:'Barlow',size:11}, callback: v=>v+' kg' },
+            grid:  { color:'#222' },
+            border:{ color:'#333' },
+            title: { display:true, text:'kg', color:'#E30613', font:{family:'Barlow',size:11,weight:'700'} }
+          },
+          yReps: {
+            type: 'linear',
+            position: 'right',
+            ticks: { color:'#888', font:{family:'Barlow',size:11}, callback: v=>v+' rep' },
+            grid:  { drawOnChartArea: false },
+            border:{ color:'#333' },
+            title: { display:true, text:'reps', color:'#888', font:{family:'Barlow',size:11,weight:'700'} }
           }
         }
       }
     });
   };
 
-  // ── ACTIONS ────────────────────────────────────────────────────────
+  // ── ACTIONS ──────────────────────────────────────────────────────
   window.saveLog = async () => {
     const exercise = document.getElementById('newExercise').value.trim();
-    const weight = parseFloat(document.getElementById('newWeight').value);
-    const reps = parseInt(document.getElementById('newReps').value);
-    const sets = parseInt(document.getElementById('newSets').value) || 1;
-    const date = document.getElementById('newDate').value || today();
-    if (!exercise || isNaN(weight) || isNaN(reps)) { alert('Inserisci esercizio, peso e reps!'); return; }
-    setSync('loading', 'salvataggio…');
+    const weight   = parseFloat(document.getElementById('newWeight').value);
+    const reps     = parseInt(document.getElementById('newReps').value);
+    const date     = document.getElementById('newDate').value || today();
+
+    if (!exercise || isNaN(weight) || isNaN(reps)) {
+      alert('Inserisci esercizio, carico e ripetizioni!'); return;
+    }
+    setSync('loading','salvataggio…');
     try {
-      await addDoc(collection(db, 'logs'), { personId: currentPerson, exercise, weight, reps, sets, date, createdAt: Date.now() });
+      await addDoc(collection(db,'logs'), {
+        personId: currentPerson, exercise, weight, reps,
+        sets: 1,  // kept for compatibility
+        date, createdAt: Date.now()
+      });
       closeModal('addLog');
-      ['newExercise','newWeight','newReps','newSets'].forEach(id => document.getElementById(id).value = '');
-    } catch(e) { setSync('err', 'errore'); alert('Errore: ' + e.message); }
+      ['newExercise','newWeight','newReps'].forEach(id=>document.getElementById(id).value='');
+    } catch(e) { setSync('err','errore'); alert('Errore: '+e.message); }
   };
 
   window.deleteLog = async id => {
     if (!confirm('Eliminare questa serie?')) return;
-    setSync('loading', 'eliminazione…');
-    try { await deleteDoc(doc(db, 'logs', id)); } catch(e) { setSync('err', 'errore'); }
+    setSync('loading','eliminazione…');
+    try { await deleteDoc(doc(db,'logs',id)); }
+    catch(e) { setSync('err','errore'); }
   };
 
   window.savePerson = async () => {
     const name = document.getElementById('newPersonName').value.trim();
     if (!name) { alert('Inserisci un nome!'); return; }
-    setSync('loading', 'salvataggio…');
+    setSync('loading','salvataggio…');
     try {
-      const ref = await addDoc(collection(db, 'persons'), { name, createdAt: Date.now() });
+      const ref = await addDoc(collection(db,'persons'),{name,createdAt:Date.now()});
       currentPerson = ref.id;
       localStorage.setItem('gymtrack_person', currentPerson);
       document.getElementById('newPersonName').value = '';
       closeModal('addPerson');
-    } catch(e) { setSync('err', 'errore'); alert('Errore: ' + e.message); }
+    } catch(e) { setSync('err','errore'); alert('Errore: '+e.message); }
   };
 
   window.selectPerson = id => {
@@ -799,16 +887,17 @@
 
   function populateSuggestions() {
     document.getElementById('exerciseSuggestions').innerHTML =
-      [...new Set(logs.map(l => l.exercise))].sort().map(e => `<option value="${e}">`).join('');
+      [...new Set(logs.map(l=>l.exercise))].sort().map(e=>`<option value="${e}">`).join('');
   }
 
-  window.openModal = id => {
+  window.openModal  = id => {
     document.getElementById('modal-'+id).classList.add('open');
-    if (id === 'addLog') document.getElementById('newDate').value = today();
+    if (id==='addLog') document.getElementById('newDate').value = today();
   };
   window.closeModal = id => document.getElementById('modal-'+id).classList.remove('open');
-  document.querySelectorAll('.modal-overlay').forEach(o =>
-    o.addEventListener('click', e => { if (e.target===o) o.classList.remove('open'); })
+
+  document.querySelectorAll('.modal-overlay').forEach(o=>
+    o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); })
   );
 </script>
 </body>
