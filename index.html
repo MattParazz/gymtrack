@@ -5,27 +5,36 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="GymTrack" />
-  <meta name="theme-color" content="#0a0a0f" />
-  <title>GymTrack</title>
+  <meta name="apple-mobile-web-app-title" content="GymSmartTrack" />
+  <meta name="theme-color" content="#1a1a1a" />
+  <title>GymSmartTrack</title>
   <link rel="manifest" href="manifest.json" />
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800&display=swap');
 
     :root {
-      --bg: #0a0a0f;
-      --surface: #13131a;
-      --surface2: #1c1c28;
-      --border: #2a2a3a;
-      --accent: #c8f55a;
-      --accent2: #5af5c8;
-      --accent3: #f55a8f;
-      --text: #f0f0f0;
-      --text-dim: #7a7a9a;
-      --radius: 16px;
-      --font-head: 'Syne', sans-serif;
-      --font-mono: 'Space Mono', monospace;
+      /* ATOS brand palette */
+      --red:        #E30613;
+      --red-dark:   #B8000F;
+      --red-glow:   rgba(227,6,19,0.15);
+      --bg:         #111111;
+      --surface:    #1c1c1c;
+      --surface2:   #252525;
+      --surface3:   #2e2e2e;
+      --border:     #333333;
+      --border2:    #444444;
+      --text:       #f5f5f5;
+      --text-dim:   #888888;
+      --text-muted: #555555;
+      --white:      #ffffff;
+      --green:      #22c55e;
+      --green-dim:  rgba(34,197,94,0.12);
+      --amber:      #f59e0b;
+      --radius:     10px;
+      --radius-lg:  16px;
+      --font:       'Barlow', sans-serif;
+      --font-cond:  'Barlow Condensed', sans-serif;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -33,156 +42,338 @@
     body {
       background: var(--bg);
       color: var(--text);
-      font-family: var(--font-head);
+      font-family: var(--font);
       min-height: 100dvh;
       overflow-x: hidden;
-      padding-bottom: env(safe-area-inset-bottom);
     }
 
-    /* ── SYNC STATUS ── */
-    .sync-bar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      padding: 6px 16px; padding-top: calc(6px + env(safe-area-inset-top));
-      display: flex; align-items: center; justify-content: flex-end;
+    /* ── SYNC ── */
+    .sync-pill {
+      display: flex; align-items: center; gap: 6px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: 4px 10px;
       pointer-events: none;
     }
-    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); margin-right: 6px; transition: background 0.3s; }
-    .sync-dot.ok { background: var(--accent2); }
-    .sync-dot.err { background: var(--accent3); }
-    .sync-dot.loading { background: var(--accent); animation: pulse 1s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-    .sync-label { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); }
+    .sync-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--text-muted); transition: background 0.3s; flex-shrink: 0; }
+    .sync-dot.ok { background: var(--green); }
+    .sync-dot.err { background: var(--red); }
+    .sync-dot.loading { background: var(--amber); animation: blink 1s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .sync-label { font-size: 10px; color: var(--text-dim); font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
+
+    /* ── TOP BAR ── */
+    .topbar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+      background: rgba(17,17,17,0.97);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding-top: env(safe-area-inset-top);
+    }
+    .topbar-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 16px; height: 52px; gap: 10px;
+    }
+    .logo {
+      display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+    }
+    .logo-mark {
+      width: 32px; height: 32px;
+      background: var(--red);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-cond);
+      font-size: 15px; font-weight: 800;
+      color: white; letter-spacing: -0.5px;
+      flex-shrink: 0;
+    }
+    .logo-text {
+      font-family: var(--font-cond);
+      font-size: 18px; font-weight: 800;
+      letter-spacing: 0.02em; line-height: 1;
+    }
+    .logo-text span { color: var(--red); }
+
+    .person-scroll {
+      display: flex; align-items: center; gap: 6px;
+      overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0;
+    }
+    .person-scroll::-webkit-scrollbar { display: none; }
+    .person-chip {
+      white-space: nowrap; flex-shrink: 0;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 6px; padding: 5px 12px;
+      font-size: 12px; font-weight: 700; cursor: pointer;
+      transition: all 0.15s; letter-spacing: 0.03em; text-transform: uppercase;
+    }
+    .person-chip.active {
+      background: var(--red); color: white; border-color: var(--red);
+    }
+    .person-chip.add-btn {
+      background: none; border-style: dashed; color: var(--text-dim);
+    }
+    .person-chip.add-btn:active { color: var(--red); border-color: var(--red); }
 
     /* ── NAV ── */
     .nav {
-      position: fixed; bottom: 0; left: 0; right: 0;
-      background: rgba(13,13,20,0.92);
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(17,17,17,0.97);
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border);
-      display: flex; padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 100;
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      padding-bottom: env(safe-area-inset-bottom);
     }
     .nav-btn {
-      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
-      background: none; border: none; color: var(--text-dim);
-      font-family: var(--font-head); font-size: 10px; font-weight: 600;
-      letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 0; cursor: pointer; transition: color 0.2s;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      background: none; border: none; color: var(--text-muted);
+      font-family: var(--font); font-size: 9px; font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 10px 0; cursor: pointer; transition: color 0.18s;
+      position: relative;
     }
-    .nav-btn.active { color: var(--accent); }
-    .nav-btn svg { width: 22px; height: 22px; }
+    .nav-btn::before {
+      content: ''; position: absolute; top: 0; left: 20%; right: 20%;
+      height: 2px; background: var(--red); border-radius: 0 0 2px 2px;
+      opacity: 0; transition: opacity 0.18s;
+    }
+    .nav-btn.active { color: var(--red); }
+    .nav-btn.active::before { opacity: 1; }
+    .nav-btn svg { width: 20px; height: 20px; }
 
     /* ── PAGES ── */
-    .page { display: none; padding: 0 16px; padding-top: 80px; padding-bottom: 100px; max-width: 600px; margin: 0 auto; }
+    .page {
+      display: none;
+      padding: 0 16px;
+      padding-top: calc(52px + env(safe-area-inset-top) + 12px);
+      padding-bottom: calc(64px + env(safe-area-inset-bottom) + 12px);
+      max-width: 640px; margin: 0 auto;
+    }
     .page.active { display: block; }
 
-    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-    .page-title { font-size: 28px; font-weight: 800; line-height: 1; }
-    .page-title span { color: var(--accent); }
+    /* ── PAGE HEADER ── */
+    .page-header {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 20px; padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-title {
+      font-family: var(--font-cond);
+      font-size: 30px; font-weight: 800;
+      letter-spacing: 0.01em; line-height: 1;
+      text-transform: uppercase;
+    }
+    .page-title span { color: var(--red); }
+    .page-sub { font-size: 12px; color: var(--text-dim); font-weight: 500; margin-top: 3px; }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 10px; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--text-muted);
+      margin-bottom: 10px; margin-top: 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
     /* ── CARDS ── */
-    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; }
-    .card-row { display: flex; align-items: center; justify-content: space-between; }
-    .card-name { font-size: 16px; font-weight: 700; }
-    .card-sub { font-size: 12px; color: var(--text-dim); margin-top: 3px; font-family: var(--font-mono); }
-    .badge { background: var(--accent); color: var(--bg); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-family: var(--font-mono); }
+    .card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px;
+      transition: border-color 0.15s;
+    }
+    .card:active { border-color: var(--border2); }
+    .card.accent-left { border-left: 3px solid var(--red); }
+    .card-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .card-name { font-size: 15px; font-weight: 700; line-height: 1.2; }
+    .card-meta { font-size: 11px; color: var(--text-dim); font-weight: 500; margin-top: 3px; }
+
+    /* ── BADGES ── */
+    .badge {
+      background: var(--surface3); color: var(--text);
+      font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 5px; font-family: var(--font-cond);
+      letter-spacing: 0.04em; white-space: nowrap;
+    }
+    .badge.red { background: var(--red); color: white; }
+    .badge.green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.25); }
+    .badge.outline { background: none; border: 1px solid var(--border2); color: var(--text-dim); }
+
+    /* ── STAT GRID ── */
+    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-bottom: 12px; }
+    .stat-box {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 12px 10px; text-align: center;
+    }
+    .stat-val {
+      font-family: var(--font-cond); font-size: 22px; font-weight: 800;
+      color: var(--red); line-height: 1;
+    }
+    .stat-val.green { color: var(--green); }
+    .stat-val.neutral { color: var(--text); }
+    .stat-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-top: 4px; }
 
     /* ── BUTTONS ── */
     .btn {
-      background: var(--accent); color: var(--bg); border: none; border-radius: 12px;
-      font-family: var(--font-head); font-weight: 700; font-size: 15px; padding: 14px 20px;
-      cursor: pointer; width: 100%; transition: opacity 0.15s, transform 0.1s;
+      background: var(--red); color: white; border: none;
+      border-radius: var(--radius); font-family: var(--font);
+      font-weight: 700; font-size: 15px; padding: 14px 20px;
+      cursor: pointer; width: 100%;
+      transition: opacity 0.15s, transform 0.1s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
+      letter-spacing: 0.02em;
     }
-    .btn:active { opacity: 0.8; transform: scale(0.98); }
-    .btn.secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
-    .btn.sm { font-size: 13px; padding: 10px 16px; width: auto; border-radius: 10px; }
+    .btn:active { opacity: 0.85; transform: scale(0.98); }
+    .btn.secondary {
+      background: var(--surface2); color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn.sm {
+      font-size: 12px; padding: 8px 14px; width: auto;
+      border-radius: 7px; letter-spacing: 0.05em; text-transform: uppercase;
+    }
 
     /* ── INPUTS ── */
-    .input-group { margin-bottom: 14px; }
-    .input-group label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 7px; }
+    .input-group { margin-bottom: 12px; }
+    .input-group label {
+      display: block; font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text-dim); margin-bottom: 6px;
+    }
     .input-group input, .input-group select {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
-      color: var(--text); font-family: var(--font-head); font-size: 15px; padding: 13px 16px;
+      width: 100%; background: var(--surface2); border: 1px solid var(--border);
+      border-radius: var(--radius); color: var(--text); font-family: var(--font);
+      font-size: 15px; font-weight: 500; padding: 12px 14px;
       outline: none; transition: border-color 0.2s; appearance: none;
     }
-    .input-group input:focus, .input-group select:focus { border-color: var(--accent); }
+    .input-group input:focus, .input-group select:focus {
+      border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow);
+    }
+    .input-row { display: flex; gap: 10px; }
+    .input-row .input-group { flex: 1; }
 
-    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; margin-top: 24px; }
+    /* ── LOG ITEMS ── */
+    .log-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 0; border-bottom: 1px solid var(--border);
+    }
+    .log-item:last-child { border-bottom: none; }
+    .log-val { font-family: var(--font-cond); font-size: 18px; font-weight: 700; }
+    .log-sub { font-size: 11px; color: var(--text-dim); font-weight: 500; margin-top: 1px; }
 
-    .empty { text-align: center; padding: 48px 20px; color: var(--text-dim); }
-    .empty-icon { font-size: 48px; margin-bottom: 12px; }
-    .empty h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-    .empty p { font-size: 14px; line-height: 1.5; }
+    .icon-btn {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 7px; width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; flex-shrink: 0; color: var(--text-dim);
+      transition: all 0.15s;
+    }
+    .icon-btn:active { background: rgba(227,6,19,0.15); border-color: var(--red); color: var(--red); }
+
+    /* ── TREND ── */
+    .trend-up { color: var(--green); font-size: 11px; font-weight: 700; }
+    .trend-down { color: var(--red); font-size: 11px; font-weight: 700; }
+    .trend-same { color: var(--text-dim); font-size: 11px; }
+
+    /* ── EMPTY ── */
+    .empty { text-align: center; padding: 48px 20px; }
+    .empty-icon { font-size: 44px; margin-bottom: 12px; }
+    .empty h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; }
+    .empty p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
 
     /* ── MODAL ── */
-    .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: none; align-items: flex-end; justify-content: center; }
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.75); backdrop-filter: blur(6px);
+      display: none; align-items: flex-end; justify-content: center;
+    }
     .modal-overlay.open { display: flex; }
-    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 24px 24px 0 0; padding: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); width: 100%; max-width: 600px; animation: slideUp 0.28s cubic-bezier(0.34,1.56,0.64,1); max-height: 90dvh; overflow-y: auto; }
-    @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: none; opacity: 1; } }
-    .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
+    .modal {
+      background: var(--surface); border: 1px solid var(--border2);
+      border-bottom: none;
+      border-radius: 18px 18px 0 0;
+      padding: 20px 20px calc(20px + env(safe-area-inset-bottom));
+      width: 100%; max-width: 640px;
+      animation: slideUp 0.25s cubic-bezier(0.32, 0.72, 0, 1);
+      max-height: 92dvh; overflow-y: auto;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: none; } }
+    .modal-handle {
+      width: 36px; height: 4px; background: var(--border2);
+      border-radius: 2px; margin: 0 auto 18px;
+    }
+    .modal-title {
+      font-family: var(--font-cond); font-size: 22px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.03em; margin-bottom: 18px;
+    }
+    .modal-title span { color: var(--red); }
 
     /* ── CHART ── */
-    .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
-    .chart-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
-    .chart-meta { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); margin-bottom: 14px; }
+    .chart-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 16px; margin-bottom: 12px;
+    }
+    .chart-title { font-family: var(--font-cond); font-size: 16px; font-weight: 700; text-transform: uppercase; margin-bottom: 2px; }
+    .chart-meta { font-size: 11px; color: var(--text-dim); margin-bottom: 14px; }
     canvas { width: 100% !important; }
 
-    .pr-row { display: flex; justify-content: space-between; gap: 8px; }
-    .pr-box { flex: 1; background: var(--surface2); border-radius: 10px; padding: 10px; text-align: center; }
-    .pr-box .val { font-size: 20px; font-weight: 800; color: var(--accent); font-family: var(--font-mono); }
-    .pr-box .lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
-
-    /* ── PERSON BAR ── */
-    .person-bar {
-      position: fixed; top: 0; left: 0; right: 0;
-      background: rgba(10,10,15,0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      padding: 10px 16px; padding-top: calc(10px + env(safe-area-inset-top));
-      z-index: 50; display: flex; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none;
-    }
-    .person-bar::-webkit-scrollbar { display: none; }
-    .person-chip { white-space: nowrap; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; flex-shrink: 0; transition: all 0.15s; }
-    .person-chip.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
-    .person-chip.add-btn { background: none; border-style: dashed; color: var(--text-dim); }
-
-    .log-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
-    .log-item:last-child { border-bottom: none; }
-    .log-date { font-size: 12px; color: var(--text-dim); font-family: var(--font-mono); }
-    .log-val { font-size: 16px; font-weight: 700; font-family: var(--font-mono); }
-    .log-val span { font-size: 11px; color: var(--text-dim); }
-
-    .icon-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: var(--text-dim); }
-
-    .trend-up { color: var(--accent2); }
-    .trend-down { color: var(--accent3); }
+    /* ── DIVIDER ── */
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
 
     /* ── LOADING ── */
-    #loadingScreen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; gap: 16px; }
-    .loader-logo { font-size: 48px; }
-    .loader-text { font-size: 18px; font-weight: 800; color: var(--accent); }
-    .loader-sub { font-size: 13px; color: var(--text-dim); font-family: var(--font-mono); }
-    .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    #loadingScreen {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      z-index: 999; gap: 20px;
+    }
+    .load-logo {
+      width: 72px; height: 72px; background: var(--red); border-radius: 16px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-cond); font-size: 28px; font-weight: 900; color: white;
+    }
+    .load-name { font-family: var(--font-cond); font-size: 22px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; }
+    .load-name span { color: var(--red); }
+    .load-sub { font-size: 12px; color: var(--text-dim); font-weight: 500; }
+    .spinner { width: 28px; height: 28px; border: 2px solid var(--border2); border-top-color: var(--red); border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── TODAY HERO ── */
+    .today-date {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--text-dim);
+      margin-bottom: 4px;
+    }
   </style>
 </head>
 <body>
 
+<!-- LOADING -->
 <div id="loadingScreen">
-  <div class="loader-logo">🏋️</div>
-  <div class="loader-text">GymTrack</div>
+  <div class="load-logo">GST</div>
+  <div class="load-name">Gym<span>Smart</span>Track</div>
   <div class="spinner"></div>
-  <div class="loader-sub">Connessione al database…</div>
+  <div class="load-sub">Connessione al database…</div>
 </div>
 
-<div class="sync-bar">
-  <div class="sync-dot" id="syncDot"></div>
-  <div class="sync-label" id="syncLabel">—</div>
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="topbar-inner">
+    <div class="logo">
+      <div class="logo-mark">GST</div>
+      <div class="logo-text">Gym<span>Smart</span>Track</div>
+    </div>
+    <div class="person-scroll" id="personBar"></div>
+    <div class="sync-pill">
+      <div class="sync-dot" id="syncDot"></div>
+      <div class="sync-label" id="syncLabel">…</div>
+    </div>
+  </div>
 </div>
 
-<div class="person-bar" id="personBar"></div>
-
+<!-- PAGES -->
 <div class="page active" id="page-log">
   <div class="page-header">
-    <div class="page-title">Allenamento<br><span>di oggi</span></div>
+    <div>
+      <div class="today-date" id="todayDateLabel"></div>
+      <div class="page-title">Allenamento<br><span>di oggi</span></div>
+    </div>
     <button class="btn sm" onclick="openModal('addLog')">+ Aggiungi</button>
   </div>
   <div id="todayList"></div>
@@ -190,29 +381,36 @@
 
 <div class="page" id="page-history">
   <div class="page-header">
-    <div class="page-title">Storico<br><span>esercizi</span></div>
+    <div>
+      <div class="page-title">Storico<br><span>esercizi</span></div>
+      <div class="page-sub">Tutti gli allenamenti registrati</div>
+    </div>
   </div>
   <div id="exerciseList"></div>
 </div>
 
 <div class="page" id="page-charts">
   <div class="page-header">
-    <div class="page-title">Grafici<br><span>progressi</span></div>
+    <div>
+      <div class="page-title">Grafici<br><span>progressi</span></div>
+      <div class="page-sub">Analisi delle performance</div>
+    </div>
   </div>
   <div class="input-group">
-    <label>Esercizio</label>
+    <label>Seleziona esercizio</label>
     <select id="chartExerciseSelect" onchange="renderChart()"></select>
   </div>
   <div id="chartArea"></div>
 </div>
 
+<!-- NAV -->
 <nav class="nav">
   <button class="nav-btn active" onclick="showPage('log', this)">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 4v16m-8-8h16"/></svg>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
     Oggi
   </button>
   <button class="nav-btn" onclick="showPage('history', this)">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10"/></svg>
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10M4 18h6"/></svg>
     Storico
   </button>
   <button class="nav-btn" onclick="showPage('charts', this)">
@@ -221,39 +419,44 @@
   </button>
 </nav>
 
-<!-- MODALS -->
+<!-- MODAL: ADD LOG -->
 <div class="modal-overlay" id="modal-addLog">
   <div class="modal">
-    <div class="modal-title">📝 Aggiungi serie</div>
+    <div class="modal-handle"></div>
+    <div class="modal-title">Nuova <span>serie</span></div>
     <div class="input-group">
       <label>Esercizio</label>
-      <input type="text" id="newExercise" placeholder="es. Panca piana, Squat…" list="exerciseSuggestions" />
+      <input type="text" id="newExercise" placeholder="es. Panca piana, Squat, Stacchi…" list="exerciseSuggestions" autocomplete="off" />
       <datalist id="exerciseSuggestions"></datalist>
     </div>
-    <div style="display:flex;gap:10px;">
-      <div class="input-group" style="flex:1"><label>Peso (kg)</label><input type="number" id="newWeight" placeholder="80" min="0" step="0.5" /></div>
-      <div class="input-group" style="flex:1"><label>Reps</label><input type="number" id="newReps" placeholder="8" min="1" /></div>
+    <div class="input-row">
+      <div class="input-group"><label>Peso (kg)</label><input type="number" id="newWeight" placeholder="80" min="0" step="0.5" inputmode="decimal" /></div>
+      <div class="input-group"><label>Reps</label><input type="number" id="newReps" placeholder="8" min="1" inputmode="numeric" /></div>
+      <div class="input-group"><label>Serie</label><input type="number" id="newSets" placeholder="3" min="1" inputmode="numeric" /></div>
     </div>
-    <div class="input-group"><label>Serie</label><input type="number" id="newSets" placeholder="3" min="1" /></div>
     <div class="input-group"><label>Data</label><input type="date" id="newDate" /></div>
-    <button class="btn" onclick="saveLog()">Salva</button>
-    <div style="height:10px"></div>
+    <button class="btn" onclick="saveLog()">Salva serie</button>
+    <div style="height:8px"></div>
     <button class="btn secondary" onclick="closeModal('addLog')">Annulla</button>
   </div>
 </div>
 
+<!-- MODAL: ADD PERSON -->
 <div class="modal-overlay" id="modal-addPerson">
   <div class="modal">
-    <div class="modal-title">👤 Aggiungi persona</div>
-    <div class="input-group"><label>Nome</label><input type="text" id="newPersonName" placeholder="Mario Rossi" /></div>
+    <div class="modal-handle"></div>
+    <div class="modal-title">Aggiungi <span>persona</span></div>
+    <div class="input-group"><label>Nome completo</label><input type="text" id="newPersonName" placeholder="es. Mario Rossi" /></div>
     <button class="btn" onclick="savePerson()">Aggiungi</button>
-    <div style="height:10px"></div>
+    <div style="height:8px"></div>
     <button class="btn secondary" onclick="closeModal('addPerson')">Annulla</button>
   </div>
 </div>
 
+<!-- MODAL: EXERCISE DETAIL -->
 <div class="modal-overlay" id="modal-exerciseDetail">
   <div class="modal">
+    <div class="modal-handle"></div>
     <div class="modal-title" id="detailTitle"></div>
     <div id="detailContent"></div>
     <button class="btn secondary" onclick="closeModal('exerciseDetail')">Chiudi</button>
@@ -283,44 +486,56 @@
   let currentPerson = localStorage.getItem('gymtrack_person') || null;
   let chartInstance = null;
 
-  function setSync(state, label) {
-    document.getElementById('syncDot').className = 'sync-dot ' + state;
-    document.getElementById('syncLabel').textContent = label;
-  }
-
+  // ── UTILS ──────────────────────────────────────────────────────────
   function today() { return new Date().toISOString().split('T')[0]; }
-  function fmtDate(d) { const [y,m,dd] = d.split('-'); return `${dd}/${m}/${y}`; }
+  function fmtDate(d) {
+    const [y,m,dd] = d.split('-');
+    const months = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
+    return `${parseInt(dd)} ${months[parseInt(m)-1]} ${y}`;
+  }
+  function fmtDateShort(d) { const [y,m,dd] = d.split('-'); return `${dd}/${m}`; }
   function currentLogs() { return logs.filter(l => l.personId === currentPerson); }
   function bestBefore(exercise, dateStr) {
     const prev = currentLogs().filter(l => l.exercise === exercise && l.date < dateStr).sort((a,b) => b.date.localeCompare(a.date));
     return prev.length ? prev[0].weight : null;
   }
 
-  // ── REAL-TIME LISTENERS ────────────────────────────────────────────
+  // ── SYNC STATUS ────────────────────────────────────────────────────
+  function setSync(state, label) {
+    document.getElementById('syncDot').className = 'sync-dot ' + state;
+    document.getElementById('syncLabel').textContent = label;
+  }
+
+  // ── TODAY LABEL ────────────────────────────────────────────────────
+  function setTodayLabel() {
+    const now = new Date();
+    const days = ['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+    const months = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+    document.getElementById('todayDateLabel').textContent = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+  }
+  setTodayLabel();
+
+  // ── LISTENERS ──────────────────────────────────────────────────────
   onSnapshot(collection(db, 'persons'), snap => {
     persons = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.createdAt||0)-(b.createdAt||0));
     if (!currentPerson || !persons.find(p => p.id === currentPerson)) {
-      if (persons.length === 0) {
-        // Auto-create first person
-        addDoc(collection(db, 'persons'), { name: 'Io', createdAt: Date.now() });
-        return;
-      }
+      if (persons.length === 0) { addDoc(collection(db, 'persons'), { name: 'Io', createdAt: Date.now() }); return; }
       currentPerson = persons[0].id;
       localStorage.setItem('gymtrack_person', currentPerson);
     }
     document.getElementById('loadingScreen').style.display = 'none';
-    setSync('ok', 'sincronizzato');
+    setSync('ok', 'online');
     renderPersonBar(); renderToday(); renderHistory(); populateSuggestions();
-  }, err => { setSync('err', 'errore connessione'); document.getElementById('loadingScreen').style.display = 'none'; });
+  }, () => { setSync('err', 'offline'); document.getElementById('loadingScreen').style.display = 'none'; });
 
   onSnapshot(query(collection(db, 'logs'), orderBy('date', 'asc')), snap => {
     logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    setSync('ok', 'sincronizzato');
+    setSync('ok', 'online');
     renderToday(); renderHistory(); populateSuggestions();
     if (document.getElementById('page-charts').classList.contains('active')) renderChartPage();
-  }, err => { setSync('err', 'errore connessione'); });
+  }, () => setSync('err', 'offline'));
 
-  // ── RENDER ─────────────────────────────────────────────────────────
+  // ── NAVIGATION ─────────────────────────────────────────────────────
   window.showPage = (id, btn) => {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
@@ -331,53 +546,114 @@
     if (id === 'log') renderToday();
   };
 
+  // ── RENDER PERSON BAR ──────────────────────────────────────────────
   function renderPersonBar() {
     document.getElementById('personBar').innerHTML =
       persons.map(p => `<div class="person-chip ${p.id===currentPerson?'active':''}" onclick="selectPerson('${p.id}')">${p.name}</div>`).join('')
       + `<div class="person-chip add-btn" onclick="openModal('addPerson')">+ Persona</div>`;
   }
 
+  // ── RENDER TODAY ───────────────────────────────────────────────────
   function renderToday() {
     const list = document.getElementById('todayList');
     const t = today();
     const todayLogs = currentLogs().filter(l => l.date === t);
-    if (!todayLogs.length) { list.innerHTML = `<div class="empty"><div class="empty-icon">🏋️</div><h3>Nessun esercizio oggi</h3><p>Tocca "+ Aggiungi" per iniziare.</p></div>`; return; }
+
+    if (!todayLogs.length) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">🏋️</div><h3>Nessun esercizio oggi</h3><p>Tocca "+ Aggiungi" per registrare<br>il tuo primo esercizio di oggi.</p></div>`;
+      return;
+    }
+
     const grouped = {};
     todayLogs.forEach(l => { if (!grouped[l.exercise]) grouped[l.exercise]=[]; grouped[l.exercise].push(l); });
+
     list.innerHTML = Object.entries(grouped).map(([ex, entries]) => {
       const last = entries[entries.length-1];
       const prev = bestBefore(ex, t);
-      const diff = prev !== null ? last.weight - prev : null;
-      const diffHtml = diff !== null ? `<span class="${diff>=0?'trend-up':'trend-down'}">${diff>=0?'▲':'▼'} ${Math.abs(diff)} kg</span>` : '';
-      const rows = entries.map(e => `<div class="log-item"><div><div class="log-val">${e.weight} <span>kg</span></div><div class="log-date">${e.sets||1}x${e.reps} reps</div></div><button class="icon-btn" onclick="deleteLog('${e.id}')"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></div>`).join('');
-      return `<div class="card"><div class="card-row"><div><div class="card-name">${ex}</div><div class="card-sub">${entries.length} serie ${diffHtml}</div></div><div class="badge">${last.weight} kg</div></div><div style="margin-top:12px">${rows}</div></div>`;
+      const diff = prev !== null ? +(last.weight - prev).toFixed(1) : null;
+      let trendHtml = '';
+      if (diff !== null) {
+        if (diff > 0) trendHtml = `<span class="trend-up">▲ +${diff} kg</span>`;
+        else if (diff < 0) trendHtml = `<span class="trend-down">▼ ${diff} kg</span>`;
+        else trendHtml = `<span class="trend-same">= stabile</span>`;
+      }
+      const rows = entries.map(e => `
+        <div class="log-item">
+          <div>
+            <div class="log-val">${e.weight} kg</div>
+            <div class="log-sub">${e.sets||1} serie × ${e.reps} reps</div>
+          </div>
+          <button class="icon-btn" onclick="deleteLog('${e.id}')">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+          </button>
+        </div>`).join('');
+      return `
+        <div class="card accent-left">
+          <div class="card-row">
+            <div>
+              <div class="card-name">${ex}</div>
+              <div class="card-meta">${entries.length} serie registrate &nbsp;${trendHtml}</div>
+            </div>
+            <div class="badge red">${last.weight} kg</div>
+          </div>
+          <div style="margin-top:10px">${rows}</div>
+        </div>`;
     }).join('');
   }
 
+  // ── RENDER HISTORY ─────────────────────────────────────────────────
   function renderHistory() {
     const list = document.getElementById('exerciseList');
     const myLogs = currentLogs();
-    if (!myLogs.length) { list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><h3>Nessuno storico</h3><p>Aggiungi il tuo primo allenamento.</p></div>`; return; }
+    if (!myLogs.length) {
+      list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><h3>Nessuno storico</h3><p>Aggiungi il tuo primo allenamento<br>dalla scheda "Oggi".</p></div>`;
+      return;
+    }
     const exercises = [...new Set(myLogs.map(l => l.exercise))].sort();
-    list.innerHTML = exercises.map(ex => {
+    list.innerHTML = `<div class="section-label">${exercises.length} esercizi tracciati</div>` + exercises.map(ex => {
       const exLogs = myLogs.filter(l => l.exercise===ex).sort((a,b) => b.date.localeCompare(a.date));
       const pr = Math.max(...exLogs.map(l => l.weight));
-      return `<div class="card" onclick="showDetail('${ex}')" style="cursor:pointer"><div class="card-row"><div><div class="card-name">${ex}</div><div class="card-sub">${exLogs.length} sessioni · ultimo ${fmtDate(exLogs[0].date)}</div></div><div class="badge" style="background:var(--accent2);color:var(--bg)">PR ${pr} kg</div></div></div>`;
+      const last = exLogs[0];
+      const first = exLogs[exLogs.length-1];
+      const progress = +(pr - first.weight).toFixed(1);
+      return `
+        <div class="card" onclick="showDetail('${ex}')" style="cursor:pointer">
+          <div class="card-row">
+            <div style="min-width:0">
+              <div class="card-name">${ex}</div>
+              <div class="card-meta">${exLogs.length} sessioni &nbsp;·&nbsp; ultimo ${fmtDate(last.date)}</div>
+            </div>
+            <div style="display:flex;gap:6px;flex-shrink:0">
+              <div class="badge green">PR ${pr} kg</div>
+            </div>
+          </div>
+        </div>`;
     }).join('');
   }
 
+  // ── DETAIL MODAL ───────────────────────────────────────────────────
   window.showDetail = ex => {
     const myLogs = currentLogs().filter(l => l.exercise===ex).sort((a,b) => b.date.localeCompare(a.date));
     const pr = Math.max(...myLogs.map(l => l.weight));
-    document.getElementById('detailTitle').textContent = ex;
+    const first = myLogs[myLogs.length-1];
+    const progress = +(pr - first.weight).toFixed(1);
+
+    document.getElementById('detailTitle').innerHTML = ex.replace(/(\s)/g,'<br>');
     document.getElementById('detailContent').innerHTML = `
-      <div class="pr-row" style="margin-bottom:16px">
-        <div class="pr-box"><div class="val">${pr} kg</div><div class="lbl">Record</div></div>
-        <div class="pr-box"><div class="val">${myLogs[0].weight} kg</div><div class="lbl">Ultima</div></div>
-        <div class="pr-box"><div class="val">${myLogs.length}</div><div class="lbl">Sessioni</div></div>
+      <div class="stat-grid" style="margin-bottom:16px">
+        <div class="stat-box"><div class="stat-val">${pr} kg</div><div class="stat-lbl">Record PR</div></div>
+        <div class="stat-box"><div class="stat-val ${progress>=0?'green':''}">${progress>=0?'+':''}${progress}</div><div class="stat-lbl">Progresso</div></div>
+        <div class="stat-box"><div class="stat-val neutral">${myLogs.length}</div><div class="stat-lbl">Sessioni</div></div>
       </div>
-      <div class="section-label">Storico</div>
-      ${myLogs.map(l => `<div class="log-item"><div class="log-date">${fmtDate(l.date)}</div><div class="log-val">${l.weight} kg <span>${l.sets||1}x${l.reps}</span></div></div>`).join('')}
+      <div class="section-label">Tutte le sessioni</div>
+      ${myLogs.map(l => `
+        <div class="log-item">
+          <div class="log-sub" style="font-size:12px">${fmtDate(l.date)}</div>
+          <div style="text-align:right">
+            <div class="log-val">${l.weight} kg</div>
+            <div class="log-sub">${l.sets||1}×${l.reps} reps</div>
+          </div>
+        </div>`).join('')}
       <div style="height:16px"></div>`;
     openModal('exerciseDetail');
   };
@@ -386,37 +662,97 @@
   function renderChartPage() {
     const sel = document.getElementById('chartExerciseSelect');
     const exercises = [...new Set(currentLogs().map(l => l.exercise))].sort();
-    sel.innerHTML = exercises.length ? exercises.map(e => `<option value="${e}">${e}</option>`).join('') : '<option value="">Nessun dato ancora</option>';
+    sel.innerHTML = exercises.length
+      ? exercises.map(e => `<option value="${e}">${e}</option>`).join('')
+      : '<option value="">Nessun dato ancora</option>';
     renderChart();
   }
 
   window.renderChart = () => {
     const area = document.getElementById('chartArea');
     const exercise = document.getElementById('chartExerciseSelect').value;
-    if (!exercise) { area.innerHTML = `<div class="empty"><div class="empty-icon">📈</div><h3>Nessun dato</h3><p>Aggiungi allenamenti per vedere i progressi.</p></div>`; return; }
+    if (!exercise) {
+      area.innerHTML = `<div class="empty"><div class="empty-icon">📈</div><h3>Nessun dato</h3><p>Aggiungi allenamenti per vedere<br>i tuoi progressi nel tempo.</p></div>`;
+      return;
+    }
+
     const myLogs = currentLogs().filter(l => l.exercise===exercise).sort((a,b) => a.date.localeCompare(b.date));
     const byDate = {};
     myLogs.forEach(l => { if (!byDate[l.date] || l.weight > byDate[l.date]) byDate[l.date] = l.weight; });
-    const labels = Object.keys(byDate).map(fmtDate);
+
+    const labels = Object.keys(byDate).map(fmtDateShort);
     const data = Object.values(byDate);
     const pr = Math.max(...data);
-    const progress = data[data.length-1] - data[0];
+    const progress = +(data[data.length-1] - data[0]).toFixed(1);
+    const sessions = data.length;
+
     area.innerHTML = `
-      <div class="pr-row" style="margin-bottom:14px">
-        <div class="pr-box"><div class="val">${pr} kg</div><div class="lbl">Record</div></div>
-        <div class="pr-box"><div class="val ${progress>=0?'trend-up':'trend-down'}">${progress>=0?'+':''}${progress} kg</div><div class="lbl">Progresso</div></div>
-        <div class="pr-box"><div class="val">${data.length}</div><div class="lbl">Sessioni</div></div>
+      <div class="stat-grid" style="margin-bottom:14px">
+        <div class="stat-box"><div class="stat-val">${pr} kg</div><div class="stat-lbl">Record</div></div>
+        <div class="stat-box"><div class="stat-val ${progress>=0?'green':''}">${progress>=0?'+':''}${progress}</div><div class="stat-lbl">Progresso</div></div>
+        <div class="stat-box"><div class="stat-val neutral">${sessions}</div><div class="stat-lbl">Sessioni</div></div>
       </div>
       <div class="chart-wrap">
         <div class="chart-title">${exercise}</div>
-        <div class="chart-meta">Peso massimo per sessione (kg)</div>
-        <canvas id="myChart" height="200"></canvas>
+        <div class="chart-meta">Peso massimo per sessione · kg</div>
+        <canvas id="myChart" height="220"></canvas>
       </div>`;
+
     if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+
+    Chart.defaults.color = '#888888';
     chartInstance = new Chart(document.getElementById('myChart').getContext('2d'), {
       type: 'line',
-      data: { labels, datasets: [{ label: 'Peso', data, borderColor: '#c8f55a', backgroundColor: 'rgba(200,245,90,0.08)', pointBackgroundColor: '#c8f55a', pointBorderColor: '#0a0a0f', pointBorderWidth: 2, pointRadius: 5, tension: 0.35, fill: true }] },
-      options: { responsive: true, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1c1c28', borderColor: '#2a2a3a', borderWidth: 1, titleColor: '#7a7a9a', bodyColor: '#c8f55a', bodyFont: { family: 'Space Mono', size: 14 }, callbacks: { label: c => ` ${c.raw} kg` } } }, scales: { x: { ticks: { color: '#7a7a9a', font: { family: 'Space Mono', size: 10 }, maxRotation: 45 }, grid: { color: '#2a2a3a' } }, y: { ticks: { color: '#7a7a9a', font: { family: 'Space Mono', size: 11 }, callback: v => v+' kg' }, grid: { color: '#2a2a3a' } } } }
+      data: {
+        labels,
+        datasets: [{
+          data,
+          borderColor: '#E30613',
+          backgroundColor: (ctx) => {
+            const gradient = ctx.chart.ctx.createLinearGradient(0, 0, 0, 200);
+            gradient.addColorStop(0, 'rgba(227,6,19,0.25)');
+            gradient.addColorStop(1, 'rgba(227,6,19,0)');
+            return gradient;
+          },
+          pointBackgroundColor: '#E30613',
+          pointBorderColor: '#1c1c1c',
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          pointHoverRadius: 7,
+          borderWidth: 2.5,
+          tension: 0.3,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: '#252525',
+            borderColor: '#444',
+            borderWidth: 1,
+            titleColor: '#888',
+            titleFont: { family: 'Barlow', size: 11, weight: '600' },
+            bodyColor: '#E30613',
+            bodyFont: { family: 'Barlow Condensed', size: 16, weight: '700' },
+            padding: 10,
+            callbacks: { label: c => ` ${c.raw} kg` }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: '#666', font: { family: 'Barlow', size: 10 }, maxRotation: 45 },
+            grid: { color: '#252525' },
+            border: { color: '#333' }
+          },
+          y: {
+            ticks: { color: '#666', font: { family: 'Barlow', size: 11 }, callback: v => v + ' kg' },
+            grid: { color: '#252525' },
+            border: { color: '#333' }
+          }
+        }
+      }
     });
   };
 
@@ -462,12 +798,18 @@
   };
 
   function populateSuggestions() {
-    document.getElementById('exerciseSuggestions').innerHTML = [...new Set(logs.map(l => l.exercise))].sort().map(e => `<option value="${e}">`).join('');
+    document.getElementById('exerciseSuggestions').innerHTML =
+      [...new Set(logs.map(l => l.exercise))].sort().map(e => `<option value="${e}">`).join('');
   }
 
-  window.openModal = id => { document.getElementById('modal-'+id).classList.add('open'); if (id==='addLog') document.getElementById('newDate').value = today(); };
-  window.closeModal = id => { document.getElementById('modal-'+id).classList.remove('open'); };
-  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target===o) o.classList.remove('open'); }));
+  window.openModal = id => {
+    document.getElementById('modal-'+id).classList.add('open');
+    if (id === 'addLog') document.getElementById('newDate').value = today();
+  };
+  window.closeModal = id => document.getElementById('modal-'+id).classList.remove('open');
+  document.querySelectorAll('.modal-overlay').forEach(o =>
+    o.addEventListener('click', e => { if (e.target===o) o.classList.remove('open'); })
+  );
 </script>
 </body>
 </html>
