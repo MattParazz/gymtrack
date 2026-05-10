@@ -1,904 +1,881 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="GymSmartTrack" />
-  <meta name="theme-color" content="#111111" />
-  <title>GymSmartTrack</title>
-  <link rel="manifest" href="manifest.json" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="GymSmartTrack"/>
+<meta name="theme-color" content="#111111"/>
+<title>GymSmartTrack</title>
+<link rel="manifest" href="manifest.json"/>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700;800;900&family=Barlow+Condensed:wght@600;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+:root{
+  --red:#E30613;--red-d:#B8000F;--red-g:rgba(227,6,19,.14);
+  --bg:#111;--s1:#1c1c1c;--s2:#252525;--s3:#2e2e2e;
+  --b1:#2e2e2e;--b2:#3d3d3d;
+  --tx:#f0f0f0;--td:#888;--tf:#555;
+  --green:#22c55e;--gb:rgba(34,197,94,.10);
+  --amber:#f59e0b;
+  --r:10px;--rl:16px;
+  --f:'Barlow',sans-serif;--fc:'Barlow Condensed',sans-serif;
+}
+body{background:var(--bg);color:var(--tx);font-family:var(--f);min-height:100dvh;overflow-x:hidden;}
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900&family=Barlow+Condensed:wght@600;700;800;900&display=swap');
+/* ── TOPBAR ── */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:60;background:rgba(17,17,17,.97);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border-bottom:1px solid var(--b1);padding-top:env(safe-area-inset-top);}
+.topbar-inner{display:flex;align-items:center;gap:10px;padding:0 14px;height:52px;}
+.logo{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.logo-name{font-family:var(--fc);font-size:15px;font-weight:900;color:var(--tx);letter-spacing:.02em;}
+.logo-name em{color:var(--red);font-style:normal;}
+.person-scroll{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0;}
+.person-scroll::-webkit-scrollbar{display:none;}
+.pchip{white-space:nowrap;flex-shrink:0;background:var(--s2);border:1px solid var(--b2);border-radius:5px;padding:5px 11px;font-size:11px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.04em;transition:all .15s;}
+.pchip.act{background:var(--red);color:#fff;border-color:var(--red);}
+.sync-pill{display:flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--b1);border-radius:20px;padding:3px 9px;flex-shrink:0;}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--tf);transition:background .3s;flex-shrink:0;}
+.sdot.ok{background:var(--green);}
+.sdot.err{background:var(--red);}
+.sdot.loading{background:var(--amber);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.slbl{font-size:9px;font-weight:700;color:var(--td);letter-spacing:.05em;text-transform:uppercase;}
 
-    :root {
-      --red:       #E30613;
-      --red-dark:  #B8000F;
-      --red-glow:  rgba(227,6,19,0.14);
-      --bg:        #111111;
-      --surface:   #1c1c1c;
-      --surface2:  #252525;
-      --surface3:  #2e2e2e;
-      --border:    #2e2e2e;
-      --border2:   #3d3d3d;
-      --text:      #f0f0f0;
-      --text-dim:  #888;
-      --text-faint:#555;
-      --green:     #22c55e;
-      --green-bg:  rgba(34,197,94,0.10);
-      --amber:     #f59e0b;
-      --chart-grey:#aaaaaa;
-      --radius:    10px;
-      --radius-lg: 16px;
-      --font:      'Barlow', sans-serif;
-      --font-cd:   'Barlow Condensed', sans-serif;
-    }
+/* ── NAV ── */
+.nav{position:fixed;bottom:0;left:0;right:0;z-index:100;background:rgba(17,17,17,.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--b1);display:grid;grid-template-columns:repeat(4,1fr);padding-bottom:env(safe-area-inset-bottom);}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:none;color:var(--tf);font-family:var(--f);font-size:9px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:10px 0;cursor:pointer;transition:color .18s;position:relative;}
+.nb::before{content:'';position:absolute;top:0;left:25%;right:25%;height:2px;background:var(--red);border-radius:0 0 2px 2px;opacity:0;transition:opacity .18s;}
+.nb.act{color:var(--red);}
+.nb.act::before{opacity:1;}
+.nb svg{width:20px;height:20px;}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+/* ── PAGES ── */
+.page{display:none;padding:0 15px;padding-top:calc(52px + env(safe-area-inset-top) + 14px);padding-bottom:calc(64px + env(safe-area-inset-bottom) + 14px);max-width:640px;margin:0 auto;}
+.page.act{display:block;}
+.ph{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--b1);}
+.pt{font-family:var(--fc);font-size:26px;font-weight:900;text-transform:uppercase;line-height:1;}
+.pt em{color:var(--red);font-style:normal;}
+.pdate{font-size:10px;color:var(--td);margin-top:3px;}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-      min-height: 100dvh;
-      overflow-x: hidden;
-    }
+/* ── SECTION LABEL ── */
+.sl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--tf);margin:18px 0 10px;display:flex;align-items:center;gap:8px;}
+.sl::after{content:'';flex:1;height:1px;background:var(--b1);}
 
-    /* ──────────────────────────────────────────
-       TOP BAR
-    ────────────────────────────────────────── */
-    .topbar {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 60;
-      background: rgba(17,17,17,0.97);
-      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--border);
-      padding-top: env(safe-area-inset-top);
-    }
-    .topbar-inner {
-      display: flex; align-items: center; gap: 10px;
-      padding: 0 14px; height: 52px;
-    }
+/* ── CARDS ── */
+.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:13px 15px;margin-bottom:9px;}
+.card.rl{border-left:3px solid var(--red);}
+.cr{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.cn{font-size:14px;font-weight:700;}
+.cm{font-size:11px;color:var(--td);margin-top:2px;}
 
-    /* ATOS-style logo */
-    .logo {
-      display: flex; align-items: center; gap: 9px; flex-shrink: 0; text-decoration: none;
-    }
-    .logo-triangle {
-      width: 30px; height: 30px; flex-shrink: 0;
-    }
-    .logo-wordmark {
-      display: flex; flex-direction: column; line-height: 1;
-    }
-    .logo-atos {
-      font-family: var(--font-cd);
-      font-size: 17px; font-weight: 900;
-      color: var(--red); letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-    .logo-sub {
-      font-family: var(--font-cd);
-      font-size: 9px; font-weight: 700;
-      color: var(--text-dim); letter-spacing: 0.12em;
-      text-transform: uppercase; margin-top: 1px;
-    }
+/* ── BADGES ── */
+.badge{font-family:var(--fc);font-size:12px;font-weight:800;padding:3px 9px;border-radius:5px;white-space:nowrap;letter-spacing:.03em;}
+.badge.red{background:var(--red);color:#fff;}
+.badge.green{background:var(--gb);color:var(--green);border:1px solid rgba(34,197,94,.2);}
+.badge.grey{background:var(--s2);color:var(--td);border:1px solid var(--b2);}
 
-    /* Person chips */
-    .person-scroll {
-      display: flex; align-items: center; gap: 6px;
-      overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0;
-    }
-    .person-scroll::-webkit-scrollbar { display: none; }
-    .person-chip {
-      white-space: nowrap; flex-shrink: 0;
-      background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: 5px; padding: 5px 11px;
-      font-family: var(--font); font-size: 12px; font-weight: 700;
-      cursor: pointer; transition: all 0.15s;
-      letter-spacing: 0.04em; text-transform: uppercase;
-    }
-    .person-chip.active { background: var(--red); color: #fff; border-color: var(--red); }
-    .person-chip.add-btn { background: none; border-style: dashed; color: var(--text-dim); }
+/* ── STAT GRID ── */
+.sg{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:12px;}
+.sb{background:var(--s2);border:1px solid var(--b1);border-radius:var(--r);padding:10px 8px;text-align:center;}
+.sv{font-family:var(--fc);font-size:20px;font-weight:900;color:var(--red);line-height:1;}
+.sv.g{color:var(--green);}
+.sv.w{color:var(--tx);}
+.slb{font-size:9px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--tf);margin-top:3px;}
 
-    /* Sync */
-    .sync-pill {
-      display: flex; align-items: center; gap: 5px;
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 20px; padding: 4px 9px; flex-shrink: 0;
-      pointer-events: none;
-    }
-    .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-faint); transition: background .3s; flex-shrink: 0; }
-    .sync-dot.ok  { background: var(--green); }
-    .sync-dot.err { background: var(--red); }
-    .sync-dot.loading { background: var(--amber); animation: blink 1s infinite; }
-    @keyframes blink { 0%,100%{opacity:1}50%{opacity:.3} }
-    .sync-label { font-size: 9px; font-weight: 700; color: var(--text-dim); letter-spacing: .05em; text-transform: uppercase; }
+/* ── BUTTONS ── */
+.btn{background:var(--red);color:#fff;border:none;border-radius:var(--r);font-family:var(--f);font-weight:700;font-size:14px;padding:12px 18px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:opacity .15s,transform .1s;letter-spacing:.02em;}
+.btn:active{opacity:.85;transform:scale(.98);}
+.btn.ghost{background:var(--s2);color:var(--tx);border:1px solid var(--b2);}
+.btn.sm{font-size:11px;padding:7px 13px;border-radius:6px;text-transform:uppercase;letter-spacing:.06em;}
+.btn-full{width:100%;padding:13px;}
 
-    /* ──────────────────────────────────────────
-       PAGES
-    ────────────────────────────────────────── */
-    .page {
-      display: none;
-      padding: 0 15px;
-      padding-top: calc(52px + env(safe-area-inset-top) + 14px);
-      padding-bottom: calc(60px + env(safe-area-inset-bottom) + 14px);
-      max-width: 640px; margin: 0 auto;
-    }
-    .page.active { display: block; }
+/* ── INPUTS ── */
+.ig{margin-bottom:12px;}
+.ig label{display:block;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--td);margin-bottom:6px;}
+.ig input,.ig select{width:100%;background:var(--s2);border:1px solid var(--b2);border-radius:var(--r);color:var(--tx);font-family:var(--f);font-size:15px;font-weight:500;padding:12px 13px;outline:none;appearance:none;transition:border-color .2s,box-shadow .2s;}
+.ig input:focus,.ig select:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--red-g);}
+.ir{display:flex;gap:10px;}
+.ir .ig{flex:1;}
 
-    .page-header {
-      display: flex; align-items: flex-end; justify-content: space-between;
-      margin-bottom: 18px; padding-bottom: 14px;
-      border-bottom: 1px solid var(--border);
-    }
-    .page-title {
-      font-family: var(--font-cd); font-size: 28px; font-weight: 900;
-      text-transform: uppercase; letter-spacing: .02em; line-height: 1;
-    }
-    .page-title em { color: var(--red); font-style: normal; }
-    .page-date { font-size: 11px; color: var(--text-dim); font-weight: 500; margin-top: 3px; }
+/* ── LOG ROWS ── */
+.lr{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--b1);}
+.lr:last-child{border-bottom:none;}
+.lv{font-family:var(--fc);font-size:17px;font-weight:800;}
+.ls{font-size:11px;color:var(--td);margin-top:1px;}
+.icon-btn{background:var(--s2);border:1px solid var(--b1);border-radius:6px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;color:var(--td);transition:all .15s;}
+.icon-btn:active{background:var(--red-g);border-color:var(--red);color:var(--red);}
 
-    /* ──────────────────────────────────────────
-       SECTION LABEL
-    ────────────────────────────────────────── */
-    .section-label {
-      font-size: 10px; font-weight: 700; letter-spacing: .12em;
-      text-transform: uppercase; color: var(--text-faint);
-      margin: 18px 0 10px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .section-label::after { content:''; flex:1; height:1px; background:var(--border); }
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.78);backdrop-filter:blur(5px);display:none;align-items:flex-end;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--s1);border:1px solid var(--b2);border-bottom:none;border-radius:18px 18px 0 0;padding:18px 18px calc(18px + env(safe-area-inset-bottom));width:100%;max-width:640px;animation:slideUp .24s cubic-bezier(.32,.72,0,1);max-height:92dvh;overflow-y:auto;}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:none}}
+.mhandle{width:36px;height:4px;background:var(--b2);border-radius:2px;margin:0 auto 16px;}
+.mt{font-family:var(--fc);font-size:21px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;margin-bottom:16px;}
+.mt em{color:var(--red);font-style:normal;}
 
-    /* ──────────────────────────────────────────
-       CARDS
-    ────────────────────────────────────────── */
-    .card {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 13px 15px; margin-bottom: 9px;
-    }
-    .card.red-left { border-left: 3px solid var(--red); }
-    .card-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .card-name { font-size: 15px; font-weight: 700; }
-    .card-meta { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+/* ── CHART ── */
+.chart-wrap{background:var(--s1);border:1px solid var(--b1);border-radius:var(--rl);padding:15px;margin-bottom:12px;}
+.chart-title{font-family:var(--fc);font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.03em;}
+.chart-meta{font-size:11px;color:var(--td);margin-top:2px;margin-bottom:10px;}
+.chart-legend{display:flex;gap:14px;margin-bottom:12px;}
+.cli{display:flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--td);}
+.cld{width:10px;height:10px;border-radius:2px;flex-shrink:0;}
+canvas{width:100%!important;}
 
-    /* ──────────────────────────────────────────
-       BADGES
-    ────────────────────────────────────────── */
-    .badge {
-      font-family: var(--font-cd); font-size: 12px; font-weight: 800;
-      padding: 4px 10px; border-radius: 5px; white-space: nowrap;
-      letter-spacing: .03em;
-    }
-    .badge.red   { background: var(--red); color: #fff; }
-    .badge.green { background: var(--green-bg); color: var(--green); border: 1px solid rgba(34,197,94,.2); }
-    .badge.grey  { background: var(--surface2); color: var(--text-dim); border: 1px solid var(--border2); }
+/* ── MUSCLE TAGS ── */
+.mtags{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px;}
+.mtag{background:rgba(227,6,19,.12);color:var(--red);border:1px solid rgba(227,6,19,.3);border-radius:4px;font-size:10px;font-weight:700;padding:2px 7px;text-transform:uppercase;letter-spacing:.04em;}
 
-    /* ──────────────────────────────────────────
-       STAT GRID
-    ────────────────────────────────────────── */
-    .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
-    .stat-box {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: var(--radius); padding: 11px 8px; text-align: center;
-    }
-    .stat-val { font-family: var(--font-cd); font-size: 22px; font-weight: 900; color: var(--red); line-height: 1; }
-    .stat-val.green { color: var(--green); }
-    .stat-val.white { color: var(--text); }
-    .stat-lbl { font-size: 9px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-faint); margin-top: 4px; }
+/* ── SETTINGS ── */
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--b1);}
+.set-row:last-child{border-bottom:none;}
+.set-name{font-size:14px;font-weight:700;}
+.set-sub{font-size:11px;color:var(--td);margin-top:2px;}
+.set-actions{display:flex;gap:6px;flex-shrink:0;}
 
-    /* ──────────────────────────────────────────
-       BUTTONS
-    ────────────────────────────────────────── */
-    .btn {
-      background: var(--red); color: #fff; border: none;
-      border-radius: var(--radius); font-family: var(--font);
-      font-weight: 700; font-size: 15px; padding: 14px;
-      cursor: pointer; width: 100%; letter-spacing: .02em;
-      display: flex; align-items: center; justify-content: center; gap: 7px;
-      transition: opacity .15s, transform .1s;
-    }
-    .btn:active { opacity: .85; transform: scale(.98); }
-    .btn.ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); }
-    .btn.sm { font-size: 12px; padding: 7px 13px; width: auto; border-radius: 6px; text-transform: uppercase; letter-spacing: .06em; }
+/* ── BODY MAP ── */
+.body-map-container{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rl);padding:14px;margin-bottom:14px;}
+.body-map-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.body-map-title{font-family:var(--fc);font-size:13px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--td);}
+.view-toggle{display:flex;gap:0;border:1px solid var(--b2);border-radius:6px;overflow:hidden;}
+.vt-btn{background:var(--s3);border:none;color:var(--td);font-family:var(--f);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:5px 12px;cursor:pointer;transition:all .15s;}
+.vt-btn.act{background:var(--red);color:#fff;}
+.body-map-views{display:flex;gap:8px;justify-content:center;align-items:flex-start;}
+.body-map-svg-wrap{flex:1;display:flex;flex-direction:column;align-items:center;}
+.bm-label{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--tf);margin-bottom:6px;}
 
-    /* ──────────────────────────────────────────
-       INPUTS
-    ────────────────────────────────────────── */
-    .input-group { margin-bottom: 12px; }
-    .input-group label {
-      display: block; font-size: 10px; font-weight: 700;
-      letter-spacing: .1em; text-transform: uppercase;
-      color: var(--text-dim); margin-bottom: 6px;
-    }
-    .input-group input,
-    .input-group select {
-      width: 100%; background: var(--surface2); border: 1px solid var(--border2);
-      border-radius: var(--radius); color: var(--text); font-family: var(--font);
-      font-size: 16px; font-weight: 500; padding: 12px 13px;
-      outline: none; transition: border-color .2s, box-shadow .2s; appearance: none;
-    }
-    .input-group input:focus,
-    .input-group select:focus {
-      border-color: var(--red); box-shadow: 0 0 0 3px var(--red-glow);
-    }
-    .input-row { display: flex; gap: 10px; }
-    .input-row .input-group { flex: 1; }
+/* muscle zone styles — filled dynamically by JS */
+.mz{stroke-width:0.8;cursor:pointer;transition:fill .25s,stroke .25s;}
+.mz:hover{filter:brightness(1.3);}
+.body-outline-path{fill:#1e1e1e;stroke:#3a3a3a;stroke-width:1.2;}
 
-    /* ──────────────────────────────────────────
-       LOG ROWS
-    ────────────────────────────────────────── */
-    .log-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 0; border-bottom: 1px solid var(--border);
-    }
-    .log-row:last-child { border-bottom: none; }
-    .log-kg { font-family: var(--font-cd); font-size: 18px; font-weight: 800; }
-    .log-reps { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
-    .icon-btn {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 7px; width: 31px; height: 31px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; flex-shrink: 0; color: var(--text-dim); transition: all .15s;
-    }
-    .icon-btn:active { background: var(--red-glow); border-color: var(--red); color: var(--red); }
+/* ── HEATMAP LEGEND ── */
+.hm-legend{display:flex;align-items:center;gap:8px;margin-top:10px;}
+.hm-grad{flex:1;height:8px;border-radius:4px;background:linear-gradient(to right,#2e2e2e,#7a0000,#E30613,#ff6b35);}
+.hm-lbl{font-size:9px;color:var(--tf);font-weight:700;text-transform:uppercase;letter-spacing:.05em;}
 
-    .trend-up   { color: var(--green); font-size: 11px; font-weight: 700; }
-    .trend-down { color: var(--red);   font-size: 11px; font-weight: 700; }
-    .trend-same { color: var(--text-faint); font-size: 11px; }
+/* ── MUSCLE CHECKLIST ── */
+.muscle-checklist{display:grid;grid-template-columns:1fr 1fr;gap:5px;max-height:220px;overflow-y:auto;padding-right:2px;}
+.mcheck{display:flex;align-items:center;gap:6px;padding:5px 8px;border-radius:6px;border:1px solid var(--b1);background:var(--s2);cursor:pointer;transition:all .15s;font-size:11px;font-weight:700;color:var(--td);}
+.mcheck.sel{background:rgba(227,6,19,.12);border-color:rgba(227,6,19,.4);color:var(--red);}
 
-    /* ──────────────────────────────────────────
-       EMPTY STATE
-    ────────────────────────────────────────── */
-    .empty { text-align: center; padding: 50px 20px; }
-    .empty-icon { font-size: 44px; margin-bottom: 12px; }
-    .empty h3 { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
-    .empty p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+/* ── EMPTY ── */
+.empty{text-align:center;padding:44px 20px;color:var(--tf);}
+.empty .ei{font-size:42px;margin-bottom:10px;}
+.empty h3{font-size:16px;font-weight:700;color:var(--td);margin-bottom:5px;}
+.empty p{font-size:12px;line-height:1.5;}
 
-    /* ──────────────────────────────────────────
-       MODAL
-    ────────────────────────────────────────── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,.78); backdrop-filter: blur(5px);
-      display: none; align-items: flex-end; justify-content: center;
-    }
-    .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface); border: 1px solid var(--border2); border-bottom: none;
-      border-radius: 18px 18px 0 0;
-      padding: 18px 18px calc(18px + env(safe-area-inset-bottom));
-      width: 100%; max-width: 640px;
-      animation: slideUp .24s cubic-bezier(.32,.72,0,1);
-      max-height: 92dvh; overflow-y: auto;
-    }
-    @keyframes slideUp { from{transform:translateY(100%)} to{transform:none} }
-    .modal-handle { width: 36px; height: 4px; background: var(--border2); border-radius: 2px; margin: 0 auto 16px; }
-    .modal-title { font-family: var(--font-cd); font-size: 22px; font-weight: 900; text-transform: uppercase; letter-spacing: .03em; margin-bottom: 16px; }
-    .modal-title em { color: var(--red); font-style: normal; }
+.trend-up{color:var(--green);font-size:11px;font-weight:700;}
+.trend-dn{color:var(--red);font-size:11px;font-weight:700;}
 
-    /* ──────────────────────────────────────────
-       CHART
-    ────────────────────────────────────────── */
-    .chart-wrap {
-      background: var(--surface); border: 1px solid var(--border);
-      border-radius: var(--radius-lg); padding: 15px; margin-bottom: 12px;
-    }
-    .chart-title { font-family: var(--font-cd); font-size: 15px; font-weight: 800; text-transform: uppercase; letter-spacing: .03em; }
-    .chart-meta { font-size: 11px; color: var(--text-dim); margin-top: 2px; margin-bottom: 14px; }
-    .chart-legend { display: flex; gap: 16px; margin-bottom: 12px; }
-    .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 700; color: var(--text-dim); }
-    .legend-dot { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
-    canvas { width: 100% !important; }
-
-    /* ──────────────────────────────────────────
-       NAV
-    ────────────────────────────────────────── */
-    .nav {
-      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
-      background: rgba(17,17,17,.97);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid var(--border);
-      display: grid; grid-template-columns: repeat(3,1fr);
-      padding-bottom: env(safe-area-inset-bottom);
-    }
-    .nav-btn {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      background: none; border: none; color: var(--text-faint);
-      font-family: var(--font); font-size: 9px; font-weight: 700;
-      letter-spacing: .08em; text-transform: uppercase;
-      padding: 10px 0; cursor: pointer; transition: color .18s;
-      position: relative;
-    }
-    .nav-btn::before {
-      content:''; position: absolute; top: 0; left: 25%; right: 25%;
-      height: 2px; background: var(--red); border-radius: 0 0 2px 2px;
-      opacity: 0; transition: opacity .18s;
-    }
-    .nav-btn.active { color: var(--red); }
-    .nav-btn.active::before { opacity: 1; }
-    .nav-btn svg { width: 20px; height: 20px; }
-
-    /* ──────────────────────────────────────────
-       LOADING
-    ────────────────────────────────────────── */
-    #loadingScreen {
-      position: fixed; inset: 0; background: var(--bg);
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      z-index: 999; gap: 16px;
-    }
-    .spinner { width: 28px; height: 28px; border: 2px solid var(--border2); border-top-color: var(--red); border-radius: 50%; animation: spin .7s linear infinite; }
-    @keyframes spin { to{transform:rotate(360deg)} }
-    .load-label { font-size: 12px; color: var(--text-dim); font-weight: 500; }
-  </style>
+/* ── LOADING ── */
+#loadingScreen{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px;}
+.spinner{width:28px;height:28px;border:2px solid var(--b2);border-top-color:var(--red);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.load-sub{font-size:12px;color:var(--td);}
+</style>
 </head>
 <body>
 
-<!-- ── LOADING ──────────────────────────────────────────────────── -->
 <div id="loadingScreen">
-  <!-- ATOS triangle SVG logo, large -->
-  <svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <polygon points="32,4 60,58 4,58" fill="#E30613"/>
-    <polygon points="32,18 48,50 16,50" fill="#c0000f" opacity="0.5"/>
-  </svg>
-  <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;font-weight:900;letter-spacing:.1em;color:#f0f0f0">
-    GYM<span style="color:#E30613">SMART</span>TRACK
-  </div>
+  <svg width="60" height="60" viewBox="0 0 60 60"><polygon points="30,4 56,54 4,54" fill="#E30613"/><polygon points="30,18 44,48 16,48" fill="#9a0000" opacity=".5"/></svg>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:20px;font-weight:900;letter-spacing:.04em">Gym<span style="color:#E30613">Smart</span>Track</div>
   <div class="spinner"></div>
-  <div class="load-label">Connessione al database…</div>
+  <div class="load-sub">Connessione al database…</div>
 </div>
 
-<!-- ── TOP BAR ──────────────────────────────────────────────────── -->
 <div class="topbar">
   <div class="topbar-inner">
-    <!-- ATOS-style triangle logo -->
     <div class="logo">
-      <svg class="logo-triangle" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <polygon points="15,2 28,27 2,27" fill="#E30613"/>
-        <polygon points="15,10 22,24 8,24" fill="#c0000f" opacity="0.45"/>
-      </svg>
-      <div class="logo-wordmark">
-        <div class="logo-atos">GymSmartTrack</div>
-        <div class="logo-sub">by ATOS SPA</div>
-      </div>
+      <svg width="26" height="26" viewBox="0 0 26 26"><polygon points="13,2 24,23 2,23" fill="#E30613"/><polygon points="13,9 19,21 7,21" fill="#9a0000" opacity=".5"/></svg>
+      <div class="logo-name">Gym<em>Smart</em>Track</div>
     </div>
-
     <div class="person-scroll" id="personBar"></div>
-
-    <div class="sync-pill">
-      <div class="sync-dot" id="syncDot"></div>
-      <div class="sync-label" id="syncLabel">…</div>
-    </div>
+    <div class="sync-pill"><div class="sdot" id="syncDot"></div><div class="slbl" id="syncLabel">…</div></div>
   </div>
 </div>
 
-<!-- ── PAGE: OGGI ────────────────────────────────────────────────── -->
-<div class="page active" id="page-log">
-  <div class="page-header">
-    <div>
-      <div class="page-date" id="todayLabel"></div>
-      <div class="page-title">Allenamento<br><em>di oggi</em></div>
-    </div>
+<!-- PAGES -->
+<div class="page act" id="page-log">
+  <div class="ph">
+    <div><div class="pdate" id="todayLabel"></div><div class="pt">Allenamento<br><em>di oggi</em></div></div>
     <button class="btn sm" onclick="openModal('addLog')">+ Aggiungi</button>
   </div>
   <div id="todayList"></div>
+  <div id="todayMapWrap"></div>
 </div>
 
-<!-- ── PAGE: STORICO ─────────────────────────────────────────────── -->
 <div class="page" id="page-history">
-  <div class="page-header">
-    <div>
-      <div class="page-title">Storico<br><em>esercizi</em></div>
-    </div>
-  </div>
-  <div id="exerciseList"></div>
+  <div class="ph"><div class="pt">Storico<br><em>esercizi</em></div></div>
+  <div id="histList"></div>
 </div>
 
-<!-- ── PAGE: GRAFICI ─────────────────────────────────────────────── -->
 <div class="page" id="page-charts">
-  <div class="page-header">
-    <div>
-      <div class="page-title">Grafici<br><em>progressi</em></div>
-    </div>
-  </div>
-  <div class="input-group">
-    <label>Seleziona esercizio</label>
-    <select id="chartExerciseSelect" onchange="renderChart()"></select>
-  </div>
+  <div class="ph"><div class="pt">Grafici<br><em>progressi</em></div></div>
+  <div class="ig"><label>Seleziona esercizio</label><select id="chartSel" onchange="drawChart()"></select></div>
   <div id="chartArea"></div>
 </div>
 
-<!-- ── NAV ──────────────────────────────────────────────────────── -->
+<div class="page" id="page-settings">
+  <div class="ph"><div class="pt">Impo<em>stazioni</em></div></div>
+  <div class="sl">Utenti</div>
+  <div id="userList"></div>
+  <button class="btn sm" onclick="openModal('addUser')" style="margin-top:6px">+ Aggiungi utente</button>
+  <div class="sl" style="margin-top:22px">Esercizi preconfigurati</div>
+  <div id="exList"></div>
+  <button class="btn sm" onclick="openModal('addEx')" style="margin-top:6px">+ Nuovo esercizio</button>
+</div>
+
+<!-- NAV -->
 <nav class="nav">
-  <button class="nav-btn active" onclick="showPage('log',this)">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>
-    Oggi
+  <button class="nb act" onclick="showPage('log',this)">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h8M12 8v8"/></svg>Oggi
   </button>
-  <button class="nav-btn" onclick="showPage('history',this)">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10M4 18h6"/></svg>
-    Storico
+  <button class="nb" onclick="showPage('history',this)">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h10M4 18h6"/></svg>Storico
   </button>
-  <button class="nav-btn" onclick="showPage('charts',this)">
-    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-    Grafici
+  <button class="nb" onclick="showPage('charts',this)">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>Grafici
+  </button>
+  <button class="nb" onclick="showPage('settings',this)">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>Settings
   </button>
 </nav>
 
-<!-- ── MODAL: AGGIUNGI SERIE ─────────────────────────────────────── -->
+<!-- MODALS -->
 <div class="modal-overlay" id="modal-addLog">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Nuova <em>serie</em></div>
-
-    <div class="input-group">
-      <label>Esercizio</label>
-      <input type="text" id="newExercise" placeholder="es. Panca piana, Squat, Stacchi…"
-             list="exerciseSuggestions" autocomplete="off" />
-      <datalist id="exerciseSuggestions"></datalist>
+    <div class="mhandle"></div>
+    <div class="mt">Nuova <em>serie</em></div>
+    <div class="ig"><label>Esercizio</label><input type="text" id="inEx" placeholder="es. Panca piana, Squat…" list="exSug" autocomplete="off"/><datalist id="exSug"></datalist></div>
+    <div class="ir">
+      <div class="ig"><label>Carico (kg)</label><input type="number" id="inKg" placeholder="80" min="0" step="0.5" inputmode="decimal"/></div>
+      <div class="ig"><label>Ripetizioni</label><input type="number" id="inRep" placeholder="8" min="1" inputmode="numeric"/></div>
     </div>
-
-    <div class="input-row">
-      <div class="input-group">
-        <label>Carico (kg)</label>
-        <input type="number" id="newWeight" placeholder="80" min="0" step="0.5" inputmode="decimal" />
-      </div>
-      <div class="input-group">
-        <label>Ripetizioni</label>
-        <input type="number" id="newReps" placeholder="8" min="1" inputmode="numeric" />
-      </div>
-    </div>
-
-    <div class="input-group">
-      <label>Data</label>
-      <input type="date" id="newDate" />
-    </div>
-
-    <button class="btn" onclick="saveLog()">Salva serie</button>
+    <div class="ig"><label>Data</label><input type="date" id="inDate"/></div>
+    <button class="btn btn-full" onclick="saveLog()">Salva serie</button>
     <div style="height:8px"></div>
-    <button class="btn ghost" onclick="closeModal('addLog')">Annulla</button>
+    <button class="btn ghost btn-full" onclick="closeModal('addLog')">Annulla</button>
   </div>
 </div>
 
-<!-- ── MODAL: AGGIUNGI PERSONA ───────────────────────────────────── -->
-<div class="modal-overlay" id="modal-addPerson">
+<div class="modal-overlay" id="modal-addUser">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title">Aggiungi <em>persona</em></div>
-    <div class="input-group">
-      <label>Nome</label>
-      <input type="text" id="newPersonName" placeholder="es. Mario Rossi" />
-    </div>
-    <button class="btn" onclick="savePerson()">Aggiungi</button>
+    <div class="mhandle"></div>
+    <div class="mt">Nuovo <em>utente</em></div>
+    <div class="ig"><label>Nome</label><input type="text" id="inUserName" placeholder="es. Mario Rossi"/></div>
+    <button class="btn btn-full" onclick="saveUser()">Aggiungi</button>
     <div style="height:8px"></div>
-    <button class="btn ghost" onclick="closeModal('addPerson')">Annulla</button>
+    <button class="btn ghost btn-full" onclick="closeModal('addUser')">Annulla</button>
   </div>
 </div>
 
-<!-- ── MODAL: DETTAGLIO ESERCIZIO ────────────────────────────────── -->
-<div class="modal-overlay" id="modal-exerciseDetail">
+<div class="modal-overlay" id="modal-renameUser">
   <div class="modal">
-    <div class="modal-handle"></div>
-    <div class="modal-title" id="detailTitle"></div>
-    <div id="detailContent"></div>
-    <button class="btn ghost" onclick="closeModal('exerciseDetail')">Chiudi</button>
+    <div class="mhandle"></div>
+    <div class="mt">Rinomina <em>utente</em></div>
+    <div class="ig"><label>Nuovo nome</label><input type="text" id="inRenameUser"/></div>
+    <input type="hidden" id="renameUserId"/>
+    <button class="btn btn-full" onclick="doRenameUser()">Salva</button>
+    <div style="height:8px"></div>
+    <button class="btn ghost btn-full" onclick="closeModal('renameUser')">Annulla</button>
   </div>
 </div>
 
-<!-- Chart.js -->
+<div class="modal-overlay" id="modal-addEx">
+  <div class="modal">
+    <div class="mhandle"></div>
+    <div class="mt">Nuovo <em>esercizio</em></div>
+    <div class="ig"><label>Nome esercizio</label><input type="text" id="inExName" placeholder="es. Curl con manubri…"/></div>
+    <div class="ig" style="margin-bottom:8px"><label>Muscoli coinvolti — tocca sulla mappa o sulla lista</label></div>
+    <div style="display:flex;gap:14px;align-items:flex-start;">
+      <div id="settingsBodyMap" style="flex-shrink:0;"></div>
+      <div style="flex:1;min-width:0;">
+        <div class="muscle-checklist" id="muscleChecklist"></div>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--td);margin-bottom:6px;">Selezionati</div>
+      <div class="mtags" id="selectedMuscleTags" style="min-height:20px;"></div>
+    </div>
+    <div style="height:12px"></div>
+    <button class="btn btn-full" onclick="saveExercise()">Salva esercizio</button>
+    <div style="height:8px"></div>
+    <button class="btn ghost btn-full" onclick="closeModal('addEx')">Annulla</button>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-
-<!-- Firebase -->
 <script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import {
-    getFirestore, collection, doc, addDoc, deleteDoc,
-    onSnapshot, query, orderBy
-  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyC25vfkc0C22e2OX5gha98sYDnA0l43NFA",
-    authDomain: "gymtrack-46ba3.firebaseapp.com",
-    projectId: "gymtrack-46ba3",
-    storageBucket: "gymtrack-46ba3.firebasestorage.app",
-    messagingSenderId: "136667175802",
-    appId: "1:136667175802:web:0b37db840dd8befb5d54c3"
-  };
+const firebaseConfig = {
+  apiKey:"AIzaSyC25vfkc0C22e2OX5gha98sYDnA0l43NFA",
+  authDomain:"gymtrack-46ba3.firebaseapp.com",
+  projectId:"gymtrack-46ba3",
+  storageBucket:"gymtrack-46ba3.firebasestorage.app",
+  messagingSenderId:"136667175802",
+  appId:"1:136667175802:web:0b37db840dd8befb5d54c3"
+};
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
 
-  const fbApp = initializeApp(firebaseConfig);
-  const db    = getFirestore(fbApp);
+/* ═══════════════════════════════════════════════════
+   BODY MAP DATA
+═══════════════════════════════════════════════════ */
+// Each muscle: id, label, front/back, SVG path data
+const MUSCLES_FRONT = [
+  // HEAD
+  {id:'testa',label:'Testa',d:'M80,8 C80,3 87,0 95,0 C103,0 110,3 110,8 C110,22 103,30 95,30 C87,30 80,22 80,8 Z'},
+  // NECK
+  {id:'collo',label:'Collo',d:'M88,30 L102,30 L104,44 L86,44 Z'},
+  // CHEST
+  {id:'petto_sx',label:'Petto Sx',d:'M72,46 C72,46 86,44 95,48 C95,48 95,65 88,68 C80,71 68,65 68,58 Z'},
+  {id:'petto_dx',label:'Petto Dx',d:'M118,46 C118,46 104,44 95,48 C95,48 95,65 102,68 C110,71 122,65 122,58 Z'},
+  // FRONT DELT
+  {id:'deltoide_ant_sx',label:'Deltoide Ant. Sx',d:'M60,44 C60,44 68,42 72,46 C72,50 70,58 64,60 C58,58 56,52 60,44 Z'},
+  {id:'deltoide_ant_dx',label:'Deltoide Ant. Dx',d:'M130,44 C130,44 122,42 118,46 C118,50 120,58 126,60 C132,58 134,52 130,44 Z'},
+  // BICEPS
+  {id:'bicipite_sx',label:'Bicipite Sx',d:'M52,60 C52,60 60,58 64,64 C66,72 64,82 58,84 C52,82 48,74 52,60 Z'},
+  {id:'bicipite_dx',label:'Bicipite Dx',d:'M138,60 C138,60 130,58 126,64 C124,72 126,82 132,84 C138,82 142,74 138,60 Z'},
+  // FOREARM FRONT
+  {id:'avambraccio_sx',label:'Avambraccio Sx',d:'M49,85 C49,85 57,83 60,88 C62,96 60,108 55,110 C50,108 46,100 49,85 Z'},
+  {id:'avambraccio_dx',label:'Avambraccio Dx',d:'M141,85 C141,85 133,83 130,88 C128,96 130,108 135,110 C140,108 144,100 141,85 Z'},
+  // ABS
+  {id:'addome_sup',label:'Addome Sup.',d:'M86,68 C86,68 95,66 104,68 L106,80 C102,82 95,83 88,80 Z'},
+  {id:'addome_mid',label:'Addome Med.',d:'M87,81 C87,81 95,83 103,81 L105,93 C101,95 95,96 89,93 Z'},
+  {id:'addome_inf',label:'Addome Inf.',d:'M88,94 C88,94 95,96 102,94 L103,106 C99,108 95,109 91,106 Z'},
+  // OBLIQUES
+  {id:'obliquo_sx',label:'Obliquo Sx',d:'M68,68 C68,68 78,66 86,68 C88,76 88,94 85,104 C78,102 68,94 66,82 Z'},
+  {id:'obliquo_dx',label:'Obliquo Dx',d:'M122,68 C122,68 112,66 104,68 C102,76 102,94 105,104 C112,102 122,94 124,82 Z'},
+  // HIP FLEXORS
+  {id:'ileopsoas_sx',label:'Flessore Anca Sx',d:'M82,106 C82,106 88,104 92,108 L92,120 C88,120 82,118 80,114 Z'},
+  {id:'ileopsoas_dx',label:'Flessore Anca Dx',d:'M108,106 C108,106 102,104 98,108 L98,120 C102,120 108,118 110,114 Z'},
+  // QUADS
+  {id:'quadricipite_sx',label:'Quadricipite Sx',d:'M74,120 C74,120 84,118 92,120 L93,158 C87,160 78,158 72,150 Z'},
+  {id:'quadricipite_dx',label:'Quadricipite Dx',d:'M116,120 C116,120 106,118 98,120 L97,158 C103,160 112,158 118,150 Z'},
+  // INNER THIGH
+  {id:'adduttore_sx',label:'Adduttore Sx',d:'M87,120 C87,120 92,120 95,124 L95,155 C92,156 88,154 86,148 Z'},
+  {id:'adduttore_dx',label:'Adduttore Dx',d:'M103,120 C103,120 98,120 95,124 L95,155 C98,156 102,154 104,148 Z'},
+  // SHIN
+  {id:'tibiale_sx',label:'Tibiale Sx',d:'M76,162 C76,162 84,160 88,164 L87,196 C83,198 76,196 74,188 Z'},
+  {id:'tibiale_dx',label:'Tibiale Dx',d:'M104,162 C104,162 106,160 114,164 L106,196 C103,198 102,196 102,188 Z'},
+  // CALVES FRONT
+  {id:'polpaccio_sx_f',label:'Polpaccio Sx',d:'M72,196 C72,196 80,194 86,196 L85,214 C81,216 74,214 70,208 Z'},
+  {id:'polpaccio_dx_f',label:'Polpaccio Dx',d:'M118,196 C118,196 110,194 104,196 L105,214 C109,216 116,214 120,208 Z'},
+];
 
-  let persons       = [];
-  let logs          = [];
-  let currentPerson = localStorage.getItem('gymtrack_person') || null;
-  let chartInst     = null;
+const MUSCLES_BACK = [
+  // TRAPS
+  {id:'trapezio',label:'Trapezio',d:'M73,44 C73,44 80,36 95,34 C110,36 117,44 117,44 L110,58 C104,54 95,52 86,54 Z'},
+  // REAR DELT
+  {id:'deltoide_post_sx',label:'Deltoide Post. Sx',d:'M60,44 C60,44 68,42 73,46 C72,54 68,60 62,60 C56,56 56,50 60,44 Z'},
+  {id:'deltoide_post_dx',label:'Deltoide Post. Dx',d:'M130,44 C130,44 122,42 117,46 C118,54 122,60 128,60 C134,56 134,50 130,44 Z'},
+  // TRICEPS
+  {id:'tricipite_sx',label:'Tricipite Sx',d:'M52,60 C52,60 60,58 63,64 C65,72 62,84 56,86 C50,84 47,74 52,60 Z'},
+  {id:'tricipite_dx',label:'Tricipite Dx',d:'M138,60 C138,60 130,58 127,64 C125,72 128,84 134,86 C140,84 143,74 138,60 Z'},
+  // FOREARM BACK
+  {id:'avambraccio_post_sx',label:'Avambraccio Post. Sx',d:'M49,87 C49,87 56,85 59,90 C61,98 59,110 54,112 C49,110 45,102 49,87 Z'},
+  {id:'avambraccio_post_dx',label:'Avambraccio Post. Dx',d:'M141,87 C141,87 134,85 131,90 C129,98 131,110 136,112 C141,110 145,102 141,87 Z'},
+  // LATS
+  {id:'dorsale_sx',label:'Dorsale Sx',d:'M68,58 C68,58 78,56 86,60 L88,100 C80,104 68,98 64,86 Z'},
+  {id:'dorsale_dx',label:'Dorsale Dx',d:'M122,58 C122,58 112,56 104,60 L102,100 C110,104 122,98 126,86 Z'},
+  // RHOMBOIDS / MID BACK
+  {id:'romboide',label:'Romboide / Medio',d:'M86,54 C86,54 95,52 104,54 L106,80 C102,82 95,83 88,80 Z'},
+  // LOWER BACK
+  {id:'lombari',label:'Lombari',d:'M87,81 C87,81 95,83 103,81 L104,108 C100,110 95,111 90,108 Z'},
+  // GLUTES
+  {id:'gluteo_sx',label:'Gluteo Sx',d:'M74,108 C74,108 84,106 93,110 L93,130 C87,132 76,130 72,122 Z'},
+  {id:'gluteo_dx',label:'Gluteo Dx',d:'M116,108 C116,108 106,106 97,110 L97,130 C103,132 114,130 118,122 Z'},
+  // HAMSTRINGS
+  {id:'bicipite_femorale_sx',label:'Bicipite Femorale Sx',d:'M74,130 C74,130 84,128 93,130 L92,164 C86,166 76,164 72,154 Z'},
+  {id:'bicipite_femorale_dx',label:'Bicipite Femorale Dx',d:'M116,130 C116,130 106,128 97,130 L98,164 C104,166 114,164 118,154 Z'},
+  // CALVES BACK
+  {id:'polpaccio_sx',label:'Polpaccio Sx',d:'M74,166 C74,166 84,164 90,166 L88,202 C84,204 76,202 72,194 Z'},
+  {id:'polpaccio_dx',label:'Polpaccio Dx',d:'M116,166 C116,166 106,164 100,166 L102,202 C106,204 114,202 118,194 Z'},
+];
 
-  // ── UTILS ────────────────────────────────────────────────────────
-  const today = () => new Date().toISOString().split('T')[0];
+// shared body outline paths (front & back look the same silhouette)
+const BODY_SILHOUETTE = `
+  M95,0 C84,0 80,8 80,14 C80,22 84,30 95,30 C106,30 110,22 110,14 C110,8 106,0 95,0 Z
+  M86,30 L104,30 L106,46 L84,46 Z
+  M64,44 C60,44 52,50 50,60 L47,88 C47,94 50,114 52,116 L58,116 L60,88 L66,88 L66,116 L74,118 L74,44 Z
+  M126,44 C130,44 138,50 140,60 L143,88 C143,94 140,114 138,116 L132,116 L130,88 L124,88 L124,116 L116,118 L116,44 Z
+  M74,44 L116,44 L118,108 L110,110 L95,112 L80,110 L72,108 Z
+  M74,118 L92,120 L95,222 L80,222 L70,200 L68,165 Z
+  M116,118 L98,120 L95,222 L110,222 L120,200 L122,165 Z
+`;
 
-  function fmtFull(d) {
-    const [y,m,dd] = d.split('-');
-    const M = ['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];
-    return `${parseInt(dd)} ${M[parseInt(m)-1]} ${y}`;
-  }
-  function fmtShort(d) { const [,m,dd] = d.split('-'); return `${parseInt(dd)}/${parseInt(m)}`; }
+/* ═══════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════ */
+let persons = [];
+let logs = [];
+let presetExercises = [];
+let currentPerson = localStorage.getItem('gst_person') || null;
+let selectedMuscles = [];
+let chartInst = null;
+let settingsBmView = 'front'; // 'front' | 'back'
+let activeBmSvgId = null; // which SVG is being interacted with
 
-  const currentLogs = () => logs.filter(l => l.personId === currentPerson);
+/* ═══════════════════════════════════════════════════
+   UTILS
+═══════════════════════════════════════════════════ */
+const today = () => new Date().toISOString().split('T')[0];
+function fmtFull(d){const[y,m,dd]=d.split('-');const M=['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'];return`${parseInt(dd)} ${M[parseInt(m)-1]} ${y}`;}
+function fmtShort(d){const[,m,dd]=d.split('-');return`${parseInt(dd)}/${parseInt(m)}`;}
+const curLogs = () => logs.filter(l=>l.personId===currentPerson);
+function bestBefore(exercise,dateStr){const prev=curLogs().filter(l=>l.exercise===exercise&&l.date<dateStr).sort((a,b)=>b.date.localeCompare(a.date));return prev.length?prev[0]:null;}
 
-  function bestBefore(exercise, dateStr) {
-    const prev = currentLogs()
-      .filter(l => l.exercise === exercise && l.date < dateStr)
-      .sort((a,b) => b.date.localeCompare(a.date));
-    return prev.length ? prev[0] : null;
-  }
+function setSync(s,lbl){document.getElementById('syncDot').className='sdot '+s;document.getElementById('syncLabel').textContent=lbl;}
 
-  // ── SYNC STATUS ──────────────────────────────────────────────────
-  function setSync(s, lbl) {
-    document.getElementById('syncDot').className = 'sync-dot ' + s;
-    document.getElementById('syncLabel').textContent = lbl;
-  }
+/* ═══════════════════════════════════════════════════
+   HEATMAP COLOR
+═══════════════════════════════════════════════════ */
+function heatColor(count, max){
+  if(!count) return '#2e2e2e';
+  const t = count/max;
+  if(t < 0.33) return `hsl(0,80%,${20+t*30}%)`;
+  if(t < 0.66) return `hsl(0,90%,${30+t*20}%)`;
+  return `hsl(${10-t*10},100%,${40+t*15}%)`;
+}
 
-  // ── TODAY LABEL ──────────────────────────────────────────────────
-  (() => {
-    const n = new Date();
-    const days = ['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
-    const months = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
-    document.getElementById('todayLabel').textContent =
-      `${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
-  })();
+/* ═══════════════════════════════════════════════════
+   BODY MAP SVG BUILDER
+═══════════════════════════════════════════════════ */
+function buildBodySVG({id, view='front', interactive=false, heatmap=null, selectedIds=[], onToggle=null}){
+  const muscles = view==='front' ? MUSCLES_FRONT : MUSCLES_BACK;
+  const max = heatmap ? Math.max(1,...Object.values(heatmap)) : 1;
 
-  // ── FIREBASE LISTENERS ───────────────────────────────────────────
-  onSnapshot(collection(db, 'persons'), snap => {
-    persons = snap.docs.map(d => ({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
-    if (!currentPerson || !persons.find(p=>p.id===currentPerson)) {
-      if (!persons.length) { addDoc(collection(db,'persons'),{name:'Io',createdAt:Date.now()}); return; }
-      currentPerson = persons[0].id;
-      localStorage.setItem('gymtrack_person', currentPerson);
+  const zones = muscles.map(m=>{
+    let fill = '#2a2a2a';
+    let stroke = '#444';
+    if(heatmap && heatmap[m.id]){
+      fill = heatColor(heatmap[m.id], max);
+      stroke = fill;
+    } else if(selectedIds.includes(m.id)){
+      fill = '#E30613';
+      stroke = '#ff3333';
     }
-    document.getElementById('loadingScreen').style.display = 'none';
-    setSync('ok','online');
-    renderPersonBar(); renderToday(); renderHistory(); populateSuggestions();
-  }, () => { setSync('err','offline'); document.getElementById('loadingScreen').style.display='none'; });
+    const clickAttr = interactive
+      ? `onclick="bmToggle('${id}','${m.id}','${m.label}',this)"`
+      : heatmap ? `style="pointer-events:none"` : '';
+    const tip = interactive ? `<title>${m.label}</title>` : heatmap && heatmap[m.id] ? `<title>${m.label}: ${heatmap[m.id]} esercizi</title>` : `<title>${m.label}</title>`;
+    return `<path d="${m.d}" fill="${fill}" stroke="${stroke}" stroke-width="0.8" class="mz" data-mid="${m.id}" data-label="${m.label}" ${clickAttr} style="${interactive?'cursor:pointer':''}${heatmap?';pointer-events:none':''}">${tip}</path>`;
+  }).join('');
 
-  onSnapshot(query(collection(db,'logs'), orderBy('date','asc')), snap => {
-    logs = snap.docs.map(d=>({id:d.id,...d.data()}));
-    setSync('ok','online');
-    renderToday(); renderHistory(); populateSuggestions();
-    if (document.getElementById('page-charts').classList.contains('active')) renderChartPage();
-  }, ()=>setSync('err','offline'));
+  return `<svg id="${id}" viewBox="60 0 70 225" width="90" height="225" xmlns="http://www.w3.org/2000/svg">
+    <path d="${BODY_SILHOUETTE}" fill="#1e1e1e" stroke="#333" stroke-width="1" fill-rule="evenodd"/>
+    ${zones}
+  </svg>`;
+}
 
-  // ── NAVIGATION ───────────────────────────────────────────────────
-  window.showPage = (id, btn) => {
-    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById('page-'+id).classList.add('active');
-    btn.classList.add('active');
-    if (id==='charts')  renderChartPage();
-    if (id==='history') renderHistory();
-    if (id==='log')     renderToday();
-  };
+/* toggle a muscle on/off in the settings body map */
+window.bmToggle = function(svgId, muscleId, muscleLabel, el){
+  const idx = selectedMuscles.indexOf(muscleLabel);
+  if(idx>=0) selectedMuscles.splice(idx,1);
+  else selectedMuscles.push(muscleLabel);
 
-  // ── PERSON BAR ───────────────────────────────────────────────────
-  function renderPersonBar() {
-    document.getElementById('personBar').innerHTML =
-      persons.map(p=>`<div class="person-chip ${p.id===currentPerson?'active':''}" onclick="selectPerson('${p.id}')">${p.name}</div>`).join('')
-      + `<div class="person-chip add-btn" onclick="openModal('addPerson')">+ Persona</div>`;
-  }
-
-  // ── TODAY ────────────────────────────────────────────────────────
-  function renderToday() {
-    const list = document.getElementById('todayList');
-    const t    = today();
-    const tl   = currentLogs().filter(l=>l.date===t);
-
-    if (!tl.length) {
-      list.innerHTML = `<div class="empty"><div class="empty-icon">🏋️</div><h3>Nessun esercizio oggi</h3><p>Tocca "+ Aggiungi" per iniziare.</p></div>`;
-      return;
-    }
-
-    const grouped = {};
-    tl.forEach(l=>{ if(!grouped[l.exercise]) grouped[l.exercise]=[]; grouped[l.exercise].push(l); });
-
-    list.innerHTML = Object.entries(grouped).map(([ex, entries])=>{
-      const last = entries[entries.length-1];
-      const prev = bestBefore(ex, t);
-      let trendHtml = '';
-      if (prev) {
-        const diff = +(last.weight - prev.weight).toFixed(1);
-        if      (diff > 0) trendHtml = `<span class="trend-up">▲ +${diff} kg</span>`;
-        else if (diff < 0) trendHtml = `<span class="trend-down">▼ ${diff} kg</span>`;
-        else               trendHtml = `<span class="trend-same">= stabile</span>`;
+  // sync SVG zones both front & back
+  ['bm-settings-front','bm-settings-back'].forEach(sid=>{
+    const svg = document.getElementById(sid);
+    if(!svg) return;
+    svg.querySelectorAll('.mz').forEach(z=>{
+      if(z.dataset.label===muscleLabel){
+        z.setAttribute('fill', selectedMuscles.includes(muscleLabel) ? '#E30613' : '#2a2a2a');
+        z.setAttribute('stroke', selectedMuscles.includes(muscleLabel) ? '#ff3333' : '#444');
       }
-      const rows = entries.map(e=>`
-        <div class="log-row">
-          <div>
-            <div class="log-kg">${e.weight} kg</div>
-            <div class="log-reps">${e.reps} ripetizioni</div>
-          </div>
-          <button class="icon-btn" onclick="deleteLog('${e.id}')">
-            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-              <path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/>
-            </svg>
-          </button>
-        </div>`).join('');
-
-      return `
-        <div class="card red-left">
-          <div class="card-row">
-            <div>
-              <div class="card-name">${ex}</div>
-              <div class="card-meta">${entries.length} serie &nbsp;${trendHtml}</div>
-            </div>
-            <div class="badge red">${last.weight} kg</div>
-          </div>
-          <div style="margin-top:10px">${rows}</div>
-        </div>`;
-    }).join('');
-  }
-
-  // ── HISTORY ──────────────────────────────────────────────────────
-  function renderHistory() {
-    const list = document.getElementById('exerciseList');
-    const ml   = currentLogs();
-    if (!ml.length) {
-      list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><h3>Nessuno storico</h3><p>Aggiungi il primo allenamento.</p></div>`;
-      return;
-    }
-    const exercises = [...new Set(ml.map(l=>l.exercise))].sort();
-    list.innerHTML = `<div class="section-label">${exercises.length} esercizi</div>` +
-      exercises.map(ex=>{
-        const xl   = ml.filter(l=>l.exercise===ex).sort((a,b)=>b.date.localeCompare(a.date));
-        const pr   = Math.max(...xl.map(l=>l.weight));
-        const maxR = Math.max(...xl.map(l=>l.reps));
-        return `
-          <div class="card" onclick="showDetail('${ex}')" style="cursor:pointer">
-            <div class="card-row">
-              <div>
-                <div class="card-name">${ex}</div>
-                <div class="card-meta">${xl.length} sessioni &nbsp;·&nbsp; ultimo ${fmtFull(xl[0].date)}</div>
-              </div>
-              <div style="display:flex;gap:6px">
-                <div class="badge red">${pr} kg</div>
-                <div class="badge grey">${maxR} reps</div>
-              </div>
-            </div>
-          </div>`;
-      }).join('');
-  }
-
-  // ── DETAIL MODAL ─────────────────────────────────────────────────
-  window.showDetail = ex => {
-    const ml  = currentLogs().filter(l=>l.exercise===ex).sort((a,b)=>b.date.localeCompare(a.date));
-    const pr  = Math.max(...ml.map(l=>l.weight));
-    const maxR= Math.max(...ml.map(l=>l.reps));
-    const progKg  = +(pr - ml[ml.length-1].weight).toFixed(1);
-
-    document.getElementById('detailTitle').innerHTML = `<em>${ex}</em>`;
-    document.getElementById('detailContent').innerHTML = `
-      <div class="stat-grid" style="margin-bottom:16px">
-        <div class="stat-box"><div class="stat-val">${pr} kg</div><div class="stat-lbl">Carico PR</div></div>
-        <div class="stat-box"><div class="stat-val ${progKg>=0?'green':''}">${progKg>=0?'+':''}${progKg}</div><div class="stat-lbl">Progresso</div></div>
-        <div class="stat-box"><div class="stat-val white">${ml.length}</div><div class="stat-lbl">Sessioni</div></div>
-      </div>
-      <div class="section-label">Tutte le sessioni</div>
-      ${ml.map(l=>`
-        <div class="log-row">
-          <div class="log-reps" style="font-size:12px">${fmtFull(l.date)}</div>
-          <div style="text-align:right">
-            <div class="log-kg">${l.weight} kg</div>
-            <div class="log-reps">${l.reps} reps</div>
-          </div>
-        </div>`).join('')}
-      <div style="height:16px"></div>`;
-    openModal('exerciseDetail');
-  };
-
-  // ── CHARTS (dual axis: kg + reps) ────────────────────────────────
-  function renderChartPage() {
-    const sel = document.getElementById('chartExerciseSelect');
-    const exercises = [...new Set(currentLogs().map(l=>l.exercise))].sort();
-    sel.innerHTML = exercises.length
-      ? exercises.map(e=>`<option value="${e}">${e}</option>`).join('')
-      : '<option value="">Nessun dato ancora</option>';
-    renderChart();
-  }
-
-  window.renderChart = () => {
-    const area     = document.getElementById('chartArea');
-    const exercise = document.getElementById('chartExerciseSelect').value;
-    if (!exercise) {
-      area.innerHTML = `<div class="empty"><div class="empty-icon">📈</div><h3>Nessun dato</h3><p>Aggiungi allenamenti per vedere i progressi.</p></div>`;
-      return;
-    }
-
-    // Group by date: max weight, max reps
-    const ml = currentLogs().filter(l=>l.exercise===exercise).sort((a,b)=>a.date.localeCompare(b.date));
-    const byDate = {};
-    ml.forEach(l=>{
-      if (!byDate[l.date]) byDate[l.date] = {weight:0, reps:0};
-      if (l.weight > byDate[l.date].weight) byDate[l.date].weight = l.weight;
-      if (l.reps   > byDate[l.date].reps)   byDate[l.date].reps   = l.reps;
     });
+  });
+  // sync checklist
+  document.querySelectorAll('#muscleChecklist .mcheck').forEach(c=>{
+    if(c.dataset.label===muscleLabel) c.classList.toggle('sel', selectedMuscles.includes(muscleLabel));
+  });
+  // update tags
+  updateSelectedTags();
+};
 
-    const labels  = Object.keys(byDate).map(fmtShort);
-    const weights = Object.values(byDate).map(v=>v.weight);
-    const reps    = Object.values(byDate).map(v=>v.reps);
+function updateSelectedTags(){
+  const el = document.getElementById('selectedMuscleTags');
+  el.innerHTML = selectedMuscles.length
+    ? selectedMuscles.map(m=>`<span class="mtag">${m}</span>`).join('')
+    : '<span style="color:var(--tf);font-size:11px">Nessuno selezionato</span>';
+}
 
-    const prKg   = Math.max(...weights);
-    const prReps = Math.max(...reps);
-    const progKg = +(weights[weights.length-1] - weights[0]).toFixed(1);
+window.checklistToggle = function(label){
+  const idx = selectedMuscles.indexOf(label);
+  if(idx>=0) selectedMuscles.splice(idx,1);
+  else selectedMuscles.push(label);
+  // sync SVG
+  ['bm-settings-front','bm-settings-back'].forEach(sid=>{
+    const svg = document.getElementById(sid);
+    if(!svg) return;
+    svg.querySelectorAll('.mz').forEach(z=>{
+      if(z.dataset.label===label){
+        z.setAttribute('fill', selectedMuscles.includes(label)?'#E30613':'#2a2a2a');
+        z.setAttribute('stroke', selectedMuscles.includes(label)?'#ff3333':'#444');
+      }
+    });
+  });
+  document.querySelectorAll('#muscleChecklist .mcheck').forEach(c=>{
+    if(c.dataset.label===label) c.classList.toggle('sel', selectedMuscles.includes(label));
+  });
+  updateSelectedTags();
+};
 
-    area.innerHTML = `
-      <div class="stat-grid" style="margin-bottom:14px">
-        <div class="stat-box"><div class="stat-val">${prKg} kg</div><div class="stat-lbl">Carico max</div></div>
-        <div class="stat-box"><div class="stat-val ${progKg>=0?'green':''}">${progKg>=0?'+':''}${progKg}</div><div class="stat-lbl">Progresso</div></div>
-        <div class="stat-box"><div class="stat-val white">${prReps}</div><div class="stat-lbl">Max reps</div></div>
+function buildSettingsBodyMap(){
+  const allMuscles = [...MUSCLES_FRONT, ...MUSCLES_BACK];
+  const unique = [];
+  const seen = new Set();
+  allMuscles.forEach(m=>{ if(!seen.has(m.label)){seen.add(m.label);unique.push(m);} });
+
+  const el = document.getElementById('settingsBodyMap');
+  el.innerHTML = `
+    <div style="display:flex;gap:6px;margin-bottom:8px;">
+      <button class="vt-btn act" id="vt-front" onclick="switchSettingsBmView('front')">Frontale</button>
+      <button class="vt-btn" id="vt-back" onclick="switchSettingsBmView('back')">Retro</button>
+    </div>
+    <div id="bm-front-wrap">${buildBodySVG({id:'bm-settings-front',view:'front',interactive:true,selectedIds:[]})}</div>
+    <div id="bm-back-wrap" style="display:none">${buildBodySVG({id:'bm-settings-back',view:'back',interactive:true,selectedIds:[]})}</div>
+  `;
+
+  // checklist: all unique muscles
+  document.getElementById('muscleChecklist').innerHTML = unique.map(m=>
+    `<div class="mcheck" data-label="${m.label}" onclick="checklistToggle('${m.label}')">${m.label}</div>`
+  ).join('');
+}
+
+window.switchSettingsBmView = function(v){
+  document.getElementById('bm-front-wrap').style.display = v==='front'?'':'none';
+  document.getElementById('bm-back-wrap').style.display = v==='back'?'':'none';
+  document.getElementById('vt-front').classList.toggle('act', v==='front');
+  document.getElementById('vt-back').classList.toggle('act', v==='back');
+};
+
+/* ═══════════════════════════════════════════════════
+   FIREBASE LISTENERS
+═══════════════════════════════════════════════════ */
+onSnapshot(collection(db,'persons'), snap=>{
+  persons = snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  if(!currentPerson||!persons.find(p=>p.id===currentPerson)){
+    if(!persons.length){ addDoc(collection(db,'persons'),{name:'Io',createdAt:Date.now()}); return; }
+    currentPerson=persons[0].id;
+    localStorage.setItem('gst_person',currentPerson);
+  }
+  document.getElementById('loadingScreen').style.display='none';
+  setSync('ok','online');
+  renderPersonBar();renderToday();renderHistory();populateSug();
+  if(document.getElementById('page-settings').classList.contains('act')) renderSettings();
+}, ()=>{ setSync('err','offline'); document.getElementById('loadingScreen').style.display='none'; });
+
+onSnapshot(query(collection(db,'logs'),orderBy('date','asc')), snap=>{
+  logs=snap.docs.map(d=>({id:d.id,...d.data()}));
+  setSync('ok','online');
+  renderToday();renderHistory();populateSug();
+  if(document.getElementById('page-charts').classList.contains('act')) renderChartPage();
+}, ()=>setSync('err','offline'));
+
+onSnapshot(collection(db,'exercises'), snap=>{
+  presetExercises=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(a.createdAt||0)-(b.createdAt||0));
+  populateSug();
+  if(document.getElementById('page-settings').classList.contains('act')) renderSettings();
+  if(document.getElementById('page-history').classList.contains('act')) renderHistory();
+  if(document.getElementById('page-charts').classList.contains('act')) renderChartPage();
+}, ()=>{});
+
+/* ═══════════════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════════════ */
+window.showPage = (id,btn)=>{
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('act'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('act'));
+  document.getElementById('page-'+id).classList.add('act');
+  btn.classList.add('act');
+  if(id==='history') renderHistory();
+  if(id==='charts') renderChartPage();
+  if(id==='log') renderToday();
+  if(id==='settings') renderSettings();
+};
+
+/* ═══════════════════════════════════════════════════
+   PERSON BAR
+═══════════════════════════════════════════════════ */
+function renderPersonBar(){
+  document.getElementById('personBar').innerHTML=
+    persons.map(p=>`<div class="pchip ${p.id===currentPerson?'act':''}" onclick="selPerson('${p.id}')">${p.name}</div>`).join('');
+}
+window.selPerson = id=>{
+  currentPerson=id; localStorage.setItem('gst_person',id);
+  renderPersonBar();renderToday();renderHistory();populateSug();
+  if(document.getElementById('page-charts').classList.contains('act')) renderChartPage();
+};
+
+/* ═══════════════════════════════════════════════════
+   INIT LABEL
+═══════════════════════════════════════════════════ */
+(()=>{
+  const n=new Date();
+  const days=['Dom','Lun','Mar','Mer','Gio','Ven','Sab'];
+  const months=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+  document.getElementById('todayLabel').textContent=`${days[n.getDay()]} ${n.getDate()} ${months[n.getMonth()]} ${n.getFullYear()}`;
+  document.getElementById('inDate').value=today();
+})();
+
+/* ═══════════════════════════════════════════════════
+   TODAY
+═══════════════════════════════════════════════════ */
+function renderToday(){
+  const list = document.getElementById('todayList');
+  const mapWrap = document.getElementById('todayMapWrap');
+  const t = today();
+  const tl = curLogs().filter(l=>l.date===t);
+
+  if(!tl.length){
+    list.innerHTML=`<div class="empty"><div class="ei">🏋️</div><h3>Nessun esercizio oggi</h3><p>Tocca "+ Aggiungi" per iniziare.</p></div>`;
+    mapWrap.innerHTML='';
+    return;
+  }
+
+  // group by exercise
+  const grouped={};
+  tl.forEach(l=>{ if(!grouped[l.exercise])grouped[l.exercise]=[]; grouped[l.exercise].push(l); });
+
+  list.innerHTML=Object.entries(grouped).map(([ex,entries])=>{
+    const last=entries[entries.length-1];
+    const prev=bestBefore(ex,t);
+    let trend='';
+    if(prev){const d=+(last.weight-prev.weight).toFixed(1);if(d>0)trend=`<span class="trend-up">▲ +${d} kg</span>`;else if(d<0)trend=`<span class="trend-dn">▼ ${d} kg</span>`;else trend=`<span style="color:var(--tf);font-size:11px">= stabile</span>`;}
+    const rows=entries.map(e=>`<div class="lr"><div><div class="lv">${e.weight} kg</div><div class="ls">${e.reps} rip.</div></div><div class="icon-btn" onclick="delLog('${e.id}')"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></div></div>`).join('');
+    return `<div class="card rl"><div class="cr"><div><div class="cn">${ex}</div><div class="cm">${entries.length} serie &nbsp;${trend}</div></div><div class="badge red">${last.weight} kg</div></div><div style="margin-top:8px">${rows}</div></div>`;
+  }).join('');
+
+  // build heatmap from today's exercises
+  const heatF={}, heatB={};
+  const exNames = Object.keys(grouped);
+  exNames.forEach(ex=>{
+    const preset = presetExercises.find(e=>e.name===ex);
+    if(!preset||!preset.muscles) return;
+    preset.muscles.forEach(label=>{
+      // find muscle id from label
+      const mf = MUSCLES_FRONT.find(m=>m.label===label);
+      const mb = MUSCLES_BACK.find(m=>m.label===label);
+      if(mf){ heatF[mf.id] = (heatF[mf.id]||0)+1; }
+      if(mb){ heatB[mb.id] = (heatB[mb.id]||0)+1; }
+    });
+  });
+
+  const hasHeat = Object.keys(heatF).length||Object.keys(heatB).length;
+  if(!hasHeat){ mapWrap.innerHTML=''; return; }
+
+  const maxVal = Math.max(1,...Object.values({...heatF,...heatB}));
+  mapWrap.innerHTML=`
+    <div class="body-map-container">
+      <div class="body-map-header">
+        <div class="body-map-title">Muscoli allenati oggi</div>
       </div>
-      <div class="chart-wrap">
-        <div class="chart-title">${exercise}</div>
-        <div class="chart-meta">Evoluzione carico e ripetizioni nel tempo</div>
-        <div class="chart-legend">
-          <div class="legend-item"><div class="legend-dot" style="background:#E30613"></div>Carico (kg)</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#aaaaaa"></div>Ripetizioni</div>
+      <div class="body-map-views">
+        <div class="body-map-svg-wrap">
+          <div class="bm-label">Frontale</div>
+          ${buildBodySVG({id:'today-bm-front',view:'front',heatmap:heatF})}
         </div>
-        <canvas id="myChart" height="240"></canvas>
-      </div>`;
+        <div class="body-map-svg-wrap">
+          <div class="bm-label">Retro</div>
+          ${buildBodySVG({id:'today-bm-back',view:'back',heatmap:heatB})}
+        </div>
+      </div>
+      <div class="hm-legend">
+        <div class="hm-lbl">Basso</div>
+        <div class="hm-grad"></div>
+        <div class="hm-lbl">Alto</div>
+      </div>
+      <div style="font-size:10px;color:var(--tf);margin-top:6px;">Calore proporzionale al numero di esercizi che coinvolgono quel muscolo</div>
+    </div>`;
+}
 
-    if (chartInst) { chartInst.destroy(); chartInst = null; }
+/* ═══════════════════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════════════════ */
+function renderHistory(){
+  const list=document.getElementById('histList');
+  const ml=curLogs();
+  if(!ml.length){list.innerHTML=`<div class="empty"><div class="ei">📋</div><h3>Nessuno storico</h3><p>Aggiungi il primo allenamento.</p></div>`;return;}
+  const exercises=[...new Set(ml.map(l=>l.exercise))].sort();
+  list.innerHTML=`<div class="sl">${exercises.length} esercizi</div>`+exercises.map(ex=>{
+    const xl=ml.filter(l=>l.exercise===ex).sort((a,b)=>b.date.localeCompare(a.date));
+    const pr=Math.max(...xl.map(l=>l.weight));
+    const mr=Math.max(...xl.map(l=>l.reps));
+    const preset=presetExercises.find(e=>e.name===ex);
+    const muscleHtml=preset&&preset.muscles&&preset.muscles.length
+      ?`<div class="mtags">${preset.muscles.slice(0,4).map(m=>`<span class="mtag">${m}</span>`).join('')}${preset.muscles.length>4?`<span class="mtag">+${preset.muscles.length-4}</span>`:''}</div>`:'';
+    return `<div class="card"><div class="cr"><div style="min-width:0"><div class="cn">${ex}</div><div class="cm">${xl.length} sessioni · ultimo ${fmtFull(xl[0].date)}</div>${muscleHtml}</div><div style="display:flex;gap:5px;flex-shrink:0"><div class="badge red">${pr} kg</div><div class="badge grey">${mr} reps</div></div></div></div>`;
+  }).join('');
+}
 
-    chartInst = new Chart(document.getElementById('myChart').getContext('2d'), {
-      data: {
-        labels,
-        datasets: [
-          {
-            type: 'line',
-            label: 'Carico (kg)',
-            data: weights,
-            yAxisID: 'yKg',
-            borderColor: '#E30613',
-            backgroundColor: ctx => {
-              const g = ctx.chart.ctx.createLinearGradient(0,0,0,220);
-              g.addColorStop(0,'rgba(227,6,19,0.22)');
-              g.addColorStop(1,'rgba(227,6,19,0)');
-              return g;
-            },
-            pointBackgroundColor: '#E30613',
-            pointBorderColor: '#1c1c1c',
-            pointBorderWidth: 2,
-            pointRadius: 5,
-            pointHoverRadius: 7,
-            borderWidth: 2.5,
-            tension: 0.3,
-            fill: true,
-            order: 1,
-          },
-          {
-            type: 'line',
-            label: 'Ripetizioni',
-            data: reps,
-            yAxisID: 'yReps',
-            borderColor: '#aaaaaa',
-            backgroundColor: 'rgba(170,170,170,0.06)',
-            pointBackgroundColor: '#aaaaaa',
-            pointBorderColor: '#1c1c1c',
-            pointBorderWidth: 2,
-            pointRadius: 4,
-            pointHoverRadius: 6,
-            borderWidth: 2,
-            tension: 0.3,
-            fill: true,
-            borderDash: [5,3],
-            order: 2,
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        interaction: { mode: 'index', intersect: false },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            backgroundColor: '#252525',
-            borderColor: '#3d3d3d',
-            borderWidth: 1,
-            titleColor: '#888',
-            titleFont: { family:'Barlow', size:11, weight:'600' },
-            padding: 10,
-            callbacks: {
-              label: c => c.dataset.yAxisID === 'yKg'
-                ? `  Carico: ${c.raw} kg`
-                : `  Reps: ${c.raw}`
-            }
-          }
-        },
-        scales: {
-          x: {
-            ticks: { color:'#666', font:{family:'Barlow',size:10}, maxRotation:45 },
-            grid:  { color:'#222' },
-            border:{ color:'#333' }
-          },
-          yKg: {
-            type: 'linear',
-            position: 'left',
-            ticks: { color:'#E30613', font:{family:'Barlow',size:11}, callback: v=>v+' kg' },
-            grid:  { color:'#222' },
-            border:{ color:'#333' },
-            title: { display:true, text:'kg', color:'#E30613', font:{family:'Barlow',size:11,weight:'700'} }
-          },
-          yReps: {
-            type: 'linear',
-            position: 'right',
-            ticks: { color:'#888', font:{family:'Barlow',size:11}, callback: v=>v+' rep' },
-            grid:  { drawOnChartArea: false },
-            border:{ color:'#333' },
-            title: { display:true, text:'reps', color:'#888', font:{family:'Barlow',size:11,weight:'700'} }
-          }
-        }
-      }
-    });
-  };
+/* ═══════════════════════════════════════════════════
+   CHARTS
+═══════════════════════════════════════════════════ */
+function renderChartPage(){
+  const sel=document.getElementById('chartSel');
+  const exs=[...new Set(curLogs().map(l=>l.exercise))].sort();
+  sel.innerHTML=exs.length?exs.map(e=>`<option value="${e}">${e}</option>`).join(''):'<option value="">Nessun dato</option>';
+  drawChart();
+}
+window.drawChart = ()=>{
+  const area=document.getElementById('chartArea');
+  const exercise=document.getElementById('chartSel').value;
+  if(!exercise){area.innerHTML=`<div class="empty"><div class="ei">📈</div><h3>Nessun dato</h3><p>Aggiungi allenamenti per vedere i progressi.</p></div>`;return;}
+  const ml=curLogs().filter(l=>l.exercise===exercise).sort((a,b)=>a.date.localeCompare(b.date));
+  const byDate={};
+  ml.forEach(l=>{if(!byDate[l.date])byDate[l.date]={weight:0,reps:0};if(l.weight>byDate[l.date].weight)byDate[l.date].weight=l.weight;if(l.reps>byDate[l.date].reps)byDate[l.date].reps=l.reps;});
+  const labels=Object.keys(byDate).map(fmtShort);
+  const weights=Object.values(byDate).map(v=>v.weight);
+  const reps=Object.values(byDate).map(v=>v.reps);
+  const prKg=Math.max(...weights);
+  const progKg=+(weights[weights.length-1]-weights[0]).toFixed(1);
+  const prR=Math.max(...reps);
+  const preset=presetExercises.find(e=>e.name===exercise);
+  const muscleHtml=preset&&preset.muscles&&preset.muscles.length?`<div class="mtags" style="margin-bottom:10px">${preset.muscles.map(m=>`<span class="mtag">${m}</span>`).join('')}</div>`:'';
+  area.innerHTML=`
+    <div class="sg"><div class="sb"><div class="sv">${prKg} kg</div><div class="slb">Carico max</div></div><div class="sb"><div class="sv ${progKg>=0?'g':''}">${progKg>=0?'+':''}${progKg}</div><div class="slb">Progresso</div></div><div class="sb"><div class="sv w">${prR}</div><div class="slb">Max reps</div></div></div>
+    ${muscleHtml}
+    <div class="chart-wrap">
+      <div class="chart-title">${exercise}</div>
+      <div class="chart-meta">Carico (kg) e ripetizioni per sessione</div>
+      <div class="chart-legend"><div class="cli"><div class="cld" style="background:#E30613"></div>Carico (kg)</div><div class="cli"><div class="cld" style="background:#aaa"></div>Ripetizioni</div></div>
+      <canvas id="myChart" height="220"></canvas>
+    </div>`;
+  if(chartInst){chartInst.destroy();chartInst=null;}
+  chartInst=new Chart(document.getElementById('myChart').getContext('2d'),{data:{labels,datasets:[{type:'line',label:'Carico',data:weights,yAxisID:'yKg',borderColor:'#E30613',backgroundColor:'rgba(227,6,19,0.10)',pointBackgroundColor:'#E30613',pointBorderColor:'#1c1c1c',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7,borderWidth:2.5,tension:0.3,fill:true,order:1},{type:'line',label:'Reps',data:reps,yAxisID:'yReps',borderColor:'#aaaaaa',backgroundColor:'rgba(170,170,170,0.04)',pointBackgroundColor:'#aaaaaa',pointBorderColor:'#1c1c1c',pointBorderWidth:2,pointRadius:4,pointHoverRadius:6,borderWidth:2,tension:0.3,fill:true,borderDash:[5,3],order:2}]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#252525',borderColor:'#3d3d3d',borderWidth:1,titleColor:'#888',titleFont:{family:'Barlow',size:11,weight:'600'},padding:10,callbacks:{label:c=>c.dataset.yAxisID==='yKg'?`  Carico: ${c.raw} kg`:`  Reps: ${c.raw}`}}},scales:{x:{ticks:{color:'#666',font:{family:'Barlow',size:10},maxRotation:45},grid:{color:'#222'},border:{color:'#333'}},yKg:{type:'linear',position:'left',ticks:{color:'#E30613',font:{family:'Barlow',size:11},callback:v=>v+' kg'},grid:{color:'#222'},border:{color:'#333'},title:{display:true,text:'kg',color:'#E30613',font:{family:'Barlow',size:11,weight:'700'}}},yReps:{type:'linear',position:'right',ticks:{color:'#aaa',font:{family:'Barlow',size:11},callback:v=>v+' rep'},grid:{drawOnChartArea:false},border:{color:'#333'},title:{display:true,text:'reps',color:'#aaa',font:{family:'Barlow',size:11,weight:'700'}}}}}});
+};
 
-  // ── ACTIONS ──────────────────────────────────────────────────────
-  window.saveLog = async () => {
-    const exercise = document.getElementById('newExercise').value.trim();
-    const weight   = parseFloat(document.getElementById('newWeight').value);
-    const reps     = parseInt(document.getElementById('newReps').value);
-    const date     = document.getElementById('newDate').value || today();
+/* ═══════════════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════════════ */
+function renderSettings(){
+  // users
+  document.getElementById('userList').innerHTML=persons.map(p=>`
+    <div class="set-row">
+      <div><div class="set-name">${p.name}</div></div>
+      <div class="set-actions">
+        <div class="icon-btn" onclick="openRenameUser('${p.id}')"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        ${persons.length>1?`<div class="icon-btn" onclick="deleteUser('${p.id}')"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></div>`:''}
+      </div>
+    </div>`).join('');
+  // exercises
+  const el=document.getElementById('exList');
+  if(!presetExercises.length){el.innerHTML=`<div style="font-size:12px;color:var(--tf);padding:8px 0">Nessun esercizio preconfigurato.</div>`;return;}
+  el.innerHTML=presetExercises.map(e=>`
+    <div class="card" style="margin-bottom:7px">
+      <div class="cr">
+        <div style="min-width:0">
+          <div class="cn">${e.name}</div>
+          <div class="mtags" style="margin-top:5px">${(e.muscles||[]).map(m=>`<span class="mtag">${m}</span>`).join('')}</div>
+        </div>
+        <div class="icon-btn" onclick="deleteExercise('${e.id}')"><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></div>
+      </div>
+    </div>`).join('');
+}
 
-    if (!exercise || isNaN(weight) || isNaN(reps)) {
-      alert('Inserisci esercizio, carico e ripetizioni!'); return;
-    }
-    setSync('loading','salvataggio…');
-    try {
-      await addDoc(collection(db,'logs'), {
-        personId: currentPerson, exercise, weight, reps,
-        sets: 1,  // kept for compatibility
-        date, createdAt: Date.now()
-      });
-      closeModal('addLog');
-      ['newExercise','newWeight','newReps'].forEach(id=>document.getElementById(id).value='');
-    } catch(e) { setSync('err','errore'); alert('Errore: '+e.message); }
-  };
+window.openRenameUser = id=>{
+  const p=persons.find(p=>p.id===id);
+  document.getElementById('inRenameUser').value=p.name;
+  document.getElementById('renameUserId').value=id;
+  openModal('renameUser');
+};
+window.doRenameUser = async()=>{
+  const id=document.getElementById('renameUserId').value;
+  const name=document.getElementById('inRenameUser').value.trim();
+  if(!name)return;
+  setSync('loading','salvataggio…');
+  try{ await updateDoc(doc(db,'persons',id),{name}); closeModal('renameUser'); }
+  catch(e){ setSync('err','errore'); }
+};
+window.saveUser = async()=>{
+  const name=document.getElementById('inUserName').value.trim();
+  if(!name)return;
+  setSync('loading','salvataggio…');
+  try{
+    const ref=await addDoc(collection(db,'persons'),{name,createdAt:Date.now()});
+    currentPerson=ref.id; localStorage.setItem('gst_person',currentPerson);
+    document.getElementById('inUserName').value='';
+    closeModal('addUser');
+  }catch(e){setSync('err','errore');}
+};
+window.deleteUser = async id=>{
+  if(persons.length<=1)return;
+  if(!confirm('Eliminare questo utente?'))return;
+  setSync('loading','eliminazione…');
+  try{ await deleteDoc(doc(db,'persons',id)); if(currentPerson===id){currentPerson=persons.find(p=>p.id!==id)?.id;localStorage.setItem('gst_person',currentPerson||'');} }
+  catch(e){setSync('err','errore');}
+};
+window.saveExercise = async()=>{
+  const name=document.getElementById('inExName').value.trim();
+  if(!name){alert('Inserisci il nome!');return;}
+  setSync('loading','salvataggio…');
+  try{
+    await addDoc(collection(db,'exercises'),{name,muscles:[...selectedMuscles],createdAt:Date.now()});
+    document.getElementById('inExName').value='';
+    selectedMuscles=[];
+    closeModal('addEx');
+  }catch(e){setSync('err','errore');alert('Errore: '+e.message);}
+};
+window.deleteExercise = async id=>{
+  if(!confirm('Eliminare questo esercizio?'))return;
+  try{ await deleteDoc(doc(db,'exercises',id)); }
+  catch(e){ alert('Errore: '+e.message); }
+};
 
-  window.deleteLog = async id => {
-    if (!confirm('Eliminare questa serie?')) return;
-    setSync('loading','eliminazione…');
-    try { await deleteDoc(doc(db,'logs',id)); }
-    catch(e) { setSync('err','errore'); }
-  };
+/* ═══════════════════════════════════════════════════
+   LOG ACTIONS
+═══════════════════════════════════════════════════ */
+window.saveLog = async()=>{
+  const exercise=document.getElementById('inEx').value.trim();
+  const weight=parseFloat(document.getElementById('inKg').value);
+  const reps=parseInt(document.getElementById('inRep').value);
+  const date=document.getElementById('inDate').value||today();
+  if(!exercise||isNaN(weight)||isNaN(reps)){alert('Inserisci esercizio, carico e ripetizioni!');return;}
+  setSync('loading','salvataggio…');
+  try{
+    await addDoc(collection(db,'logs'),{personId:currentPerson,exercise,weight,reps,sets:1,date,createdAt:Date.now()});
+    closeModal('addLog');
+    ['inEx','inKg','inRep'].forEach(id=>document.getElementById(id).value='');
+  }catch(e){setSync('err','errore');alert('Errore: '+e.message);}
+};
+window.delLog = async id=>{
+  if(!confirm('Eliminare questa serie?'))return;
+  setSync('loading','eliminazione…');
+  try{ await deleteDoc(doc(db,'logs',id)); }
+  catch(e){ setSync('err','errore'); }
+};
 
-  window.savePerson = async () => {
-    const name = document.getElementById('newPersonName').value.trim();
-    if (!name) { alert('Inserisci un nome!'); return; }
-    setSync('loading','salvataggio…');
-    try {
-      const ref = await addDoc(collection(db,'persons'),{name,createdAt:Date.now()});
-      currentPerson = ref.id;
-      localStorage.setItem('gymtrack_person', currentPerson);
-      document.getElementById('newPersonName').value = '';
-      closeModal('addPerson');
-    } catch(e) { setSync('err','errore'); alert('Errore: '+e.message); }
-  };
+function populateSug(){
+  const all=[...new Set([...presetExercises.map(e=>e.name),...logs.map(l=>l.exercise)])].sort();
+  document.getElementById('exSug').innerHTML=all.map(e=>`<option value="${e}">`).join('');
+}
 
-  window.selectPerson = id => {
-    currentPerson = id;
-    localStorage.setItem('gymtrack_person', id);
-    renderPersonBar(); renderToday(); renderHistory(); populateSuggestions();
-  };
-
-  function populateSuggestions() {
-    document.getElementById('exerciseSuggestions').innerHTML =
-      [...new Set(logs.map(l=>l.exercise))].sort().map(e=>`<option value="${e}">`).join('');
+/* ═══════════════════════════════════════════════════
+   MODALS
+═══════════════════════════════════════════════════ */
+window.openModal = id=>{
+  if(id==='addEx'){
+    selectedMuscles=[];
+    buildSettingsBodyMap();
+    document.getElementById('selectedMuscleTags').innerHTML='';
+    document.getElementById('inExName').value='';
   }
+  if(id==='addLog') document.getElementById('inDate').value=today();
+  document.getElementById('modal-'+id).classList.add('open');
+};
+window.closeModal = id=>document.getElementById('modal-'+id).classList.remove('open');
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
-  window.openModal  = id => {
-    document.getElementById('modal-'+id).classList.add('open');
-    if (id==='addLog') document.getElementById('newDate').value = today();
-  };
-  window.closeModal = id => document.getElementById('modal-'+id).classList.remove('open');
-
-  document.querySelectorAll('.modal-overlay').forEach(o=>
-    o.addEventListener('click', e=>{ if(e.target===o) o.classList.remove('open'); })
-  );
+/* CSS for view toggle buttons (added dynamically) */
+const style=document.createElement('style');
+style.textContent=`.vt-btn{background:var(--s3);border:1px solid var(--b2);color:var(--td);font-family:var(--f);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:5px 12px;cursor:pointer;transition:all .15s;}.vt-btn:first-child{border-radius:6px 0 0 6px;border-right:none;}.vt-btn:last-child{border-radius:0 6px 6px 0;}.vt-btn.act{background:var(--red);color:#fff;border-color:var(--red);}`;
+document.head.appendChild(style);
 </script>
 </body>
 </html>
