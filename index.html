@@ -8,8 +8,6 @@
   <meta name="apple-mobile-web-app-title" content="GymTrack" />
   <meta name="theme-color" content="#0a0a0f" />
   <title>GymTrack</title>
-
-  <!-- PWA manifest inline -->
   <link rel="manifest" href="manifest.json" />
 
   <style>
@@ -41,338 +39,147 @@
       padding-bottom: env(safe-area-inset-bottom);
     }
 
+    /* ── SYNC STATUS ── */
+    .sync-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      padding: 6px 16px; padding-top: calc(6px + env(safe-area-inset-top));
+      display: flex; align-items: center; justify-content: flex-end;
+      pointer-events: none;
+    }
+    .sync-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); margin-right: 6px; transition: background 0.3s; }
+    .sync-dot.ok { background: var(--accent2); }
+    .sync-dot.err { background: var(--accent3); }
+    .sync-dot.loading { background: var(--accent); animation: pulse 1s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .sync-label { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); }
+
     /* ── NAV ── */
     .nav {
-      position: fixed;
-      bottom: 0;
-      left: 0; right: 0;
+      position: fixed; bottom: 0; left: 0; right: 0;
       background: rgba(13,13,20,0.92);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border-top: 1px solid var(--border);
-      display: flex;
-      padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
-      z-index: 100;
+      display: flex; padding: 8px 0 calc(8px + env(safe-area-inset-bottom)); z-index: 100;
     }
     .nav-btn {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      background: none;
-      border: none;
-      color: var(--text-dim);
-      font-family: var(--font-head);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      padding: 6px 0;
-      cursor: pointer;
-      transition: color 0.2s;
+      flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+      background: none; border: none; color: var(--text-dim);
+      font-family: var(--font-head); font-size: 10px; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase; padding: 6px 0; cursor: pointer; transition: color 0.2s;
     }
     .nav-btn.active { color: var(--accent); }
     .nav-btn svg { width: 22px; height: 22px; }
 
     /* ── PAGES ── */
-    .page { display: none; padding: 0 16px; padding-top: 60px; padding-bottom: 100px; max-width: 600px; margin: 0 auto; }
+    .page { display: none; padding: 0 16px; padding-top: 80px; padding-bottom: 100px; max-width: 600px; margin: 0 auto; }
     .page.active { display: block; }
 
-    /* ── HEADER ── */
-    .page-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 28px;
-    }
-    .page-title {
-      font-size: 28px;
-      font-weight: 800;
-      line-height: 1;
-    }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+    .page-title { font-size: 28px; font-weight: 800; line-height: 1; }
     .page-title span { color: var(--accent); }
 
     /* ── CARDS ── */
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 18px;
-      margin-bottom: 14px;
-    }
-    .card-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .card-name {
-      font-size: 16px;
-      font-weight: 700;
-    }
-    .card-sub {
-      font-size: 12px;
-      color: var(--text-dim);
-      margin-top: 3px;
-      font-family: var(--font-mono);
-    }
-    .badge {
-      background: var(--accent);
-      color: var(--bg);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-family: var(--font-mono);
-    }
-    .badge.green { background: var(--accent2); }
-    .badge.red { background: var(--accent3); }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 14px; }
+    .card-row { display: flex; align-items: center; justify-content: space-between; }
+    .card-name { font-size: 16px; font-weight: 700; }
+    .card-sub { font-size: 12px; color: var(--text-dim); margin-top: 3px; font-family: var(--font-mono); }
+    .badge { background: var(--accent); color: var(--bg); font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-family: var(--font-mono); }
 
     /* ── BUTTONS ── */
     .btn {
-      background: var(--accent);
-      color: var(--bg);
-      border: none;
-      border-radius: 12px;
-      font-family: var(--font-head);
-      font-weight: 700;
-      font-size: 15px;
-      padding: 14px 20px;
-      cursor: pointer;
-      width: 100%;
-      transition: opacity 0.15s, transform 0.1s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
+      background: var(--accent); color: var(--bg); border: none; border-radius: 12px;
+      font-family: var(--font-head); font-weight: 700; font-size: 15px; padding: 14px 20px;
+      cursor: pointer; width: 100%; transition: opacity 0.15s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
     }
     .btn:active { opacity: 0.8; transform: scale(0.98); }
-    .btn.secondary {
-      background: var(--surface2);
-      color: var(--text);
-      border: 1px solid var(--border);
-    }
-    .btn.danger { background: var(--accent3); color: #fff; }
+    .btn.secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
     .btn.sm { font-size: 13px; padding: 10px 16px; width: auto; border-radius: 10px; }
 
     /* ── INPUTS ── */
     .input-group { margin-bottom: 14px; }
-    .input-group label {
-      display: block;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 7px;
-    }
+    .input-group label { display: block; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 7px; }
     .input-group input, .input-group select {
-      width: 100%;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      font-family: var(--font-head);
-      font-size: 15px;
-      padding: 13px 16px;
-      outline: none;
-      transition: border-color 0.2s;
-      appearance: none;
+      width: 100%; background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+      color: var(--text); font-family: var(--font-head); font-size: 15px; padding: 13px 16px;
+      outline: none; transition: border-color 0.2s; appearance: none;
     }
     .input-group input:focus, .input-group select:focus { border-color: var(--accent); }
 
-    /* ── CHIPS ── */
-    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-    .chip {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 7px 14px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .chip.active {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
-    }
+    .section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 12px; margin-top: 24px; }
 
-    /* ── SECTION LABEL ── */
-    .section-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--text-dim);
-      margin-bottom: 12px;
-      margin-top: 24px;
-    }
-
-    /* ── EMPTY STATE ── */
-    .empty {
-      text-align: center;
-      padding: 48px 20px;
-      color: var(--text-dim);
-    }
+    .empty { text-align: center; padding: 48px 20px; color: var(--text-dim); }
     .empty-icon { font-size: 48px; margin-bottom: 12px; }
     .empty h3 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
     .empty p { font-size: 14px; line-height: 1.5; }
 
     /* ── MODAL ── */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(0,0,0,0.7);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-    }
+    .modal-overlay { position: fixed; inset: 0; z-index: 200; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: none; align-items: flex-end; justify-content: center; }
     .modal-overlay.open { display: flex; }
-    .modal {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 24px 24px 0 0;
-      padding: 24px;
-      padding-bottom: calc(24px + env(safe-area-inset-bottom));
-      width: 100%;
-      max-width: 600px;
-      animation: slideUp 0.28s cubic-bezier(0.34,1.56,0.64,1);
-    }
+    .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 24px 24px 0 0; padding: 24px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); width: 100%; max-width: 600px; animation: slideUp 0.28s cubic-bezier(0.34,1.56,0.64,1); max-height: 90dvh; overflow-y: auto; }
     @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: none; opacity: 1; } }
-    .modal-title {
-      font-size: 20px;
-      font-weight: 800;
-      margin-bottom: 20px;
-    }
+    .modal-title { font-size: 20px; font-weight: 800; margin-bottom: 20px; }
 
-    /* ── CHART CANVAS ── */
-    .chart-wrap {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px;
-      margin-bottom: 14px;
-    }
-    .chart-title {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .chart-meta {
-      font-size: 11px;
-      color: var(--text-dim);
-      font-family: var(--font-mono);
-      margin-bottom: 14px;
-    }
+    /* ── CHART ── */
+    .chart-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
+    .chart-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .chart-meta { font-size: 11px; color: var(--text-dim); font-family: var(--font-mono); margin-bottom: 14px; }
     canvas { width: 100% !important; }
 
-    /* ── PR BADGE ── */
-    .pr-row {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 10px;
-      gap: 8px;
-    }
-    .pr-box {
-      flex: 1;
-      background: var(--surface2);
-      border-radius: 10px;
-      padding: 10px;
-      text-align: center;
-    }
-    .pr-box .val {
-      font-size: 20px;
-      font-weight: 800;
-      color: var(--accent);
-      font-family: var(--font-mono);
-    }
-    .pr-box .lbl {
-      font-size: 10px;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-top: 2px;
-    }
+    .pr-row { display: flex; justify-content: space-between; gap: 8px; }
+    .pr-box { flex: 1; background: var(--surface2); border-radius: 10px; padding: 10px; text-align: center; }
+    .pr-box .val { font-size: 20px; font-weight: 800; color: var(--accent); font-family: var(--font-mono); }
+    .pr-box .lbl { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-top: 2px; }
 
-    /* ── PERSON SELECTOR ── */
+    /* ── PERSON BAR ── */
     .person-bar {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      background: rgba(10,10,15,0.95);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(10,10,15,0.95); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
-      padding: 12px 16px;
-      padding-top: calc(12px + env(safe-area-inset-top));
-      z-index: 50;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      overflow-x: auto;
-      scrollbar-width: none;
+      padding: 10px 16px; padding-top: calc(10px + env(safe-area-inset-top));
+      z-index: 50; display: flex; align-items: center; gap: 8px; overflow-x: auto; scrollbar-width: none;
     }
     .person-bar::-webkit-scrollbar { display: none; }
-    .person-chip {
-      white-space: nowrap;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 7px 14px;
-      font-size: 13px;
-      font-weight: 700;
-      cursor: pointer;
-      flex-shrink: 0;
-      transition: all 0.15s;
-    }
-    .person-chip.active {
-      background: var(--accent);
-      color: var(--bg);
-      border-color: var(--accent);
-    }
-    .person-chip.add-btn {
-      background: none;
-      border-style: dashed;
-      color: var(--text-dim);
-    }
+    .person-chip { white-space: nowrap; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; flex-shrink: 0; transition: all 0.15s; }
+    .person-chip.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .person-chip.add-btn { background: none; border-style: dashed; color: var(--text-dim); }
 
-    .divider { height: 1px; background: var(--border); margin: 16px 0; }
-
-    .icon-btn {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      width: 36px; height: 36px;
-      display: flex; align-items: center; justify-content: center;
-      cursor: pointer; flex-shrink: 0;
-      color: var(--text-dim);
-      transition: all 0.15s;
-    }
-    .icon-btn:active { opacity: 0.7; }
-
-    .log-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--border);
-    }
+    .log-item { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); }
     .log-item:last-child { border-bottom: none; }
     .log-date { font-size: 12px; color: var(--text-dim); font-family: var(--font-mono); }
     .log-val { font-size: 16px; font-weight: 700; font-family: var(--font-mono); }
     .log-val span { font-size: 11px; color: var(--text-dim); }
 
+    .icon-btn { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; color: var(--text-dim); }
+
     .trend-up { color: var(--accent2); }
     .trend-down { color: var(--accent3); }
+
+    /* ── LOADING ── */
+    #loadingScreen { position: fixed; inset: 0; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 999; gap: 16px; }
+    .loader-logo { font-size: 48px; }
+    .loader-text { font-size: 18px; font-weight: 800; color: var(--accent); }
+    .loader-sub { font-size: 13px; color: var(--text-dim); font-family: var(--font-mono); }
+    .spinner { width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 
-<!-- PERSON BAR -->
+<div id="loadingScreen">
+  <div class="loader-logo">🏋️</div>
+  <div class="loader-text">GymTrack</div>
+  <div class="spinner"></div>
+  <div class="loader-sub">Connessione al database…</div>
+</div>
+
+<div class="sync-bar">
+  <div class="sync-dot" id="syncDot"></div>
+  <div class="sync-label" id="syncLabel">—</div>
+</div>
+
 <div class="person-bar" id="personBar"></div>
 
-<!-- PAGES -->
 <div class="page active" id="page-log">
   <div class="page-header">
     <div class="page-title">Allenamento<br><span>di oggi</span></div>
@@ -399,7 +206,6 @@
   <div id="chartArea"></div>
 </div>
 
-<!-- NAV -->
 <nav class="nav">
   <button class="nav-btn active" onclick="showPage('log', this)">
     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 4v16m-8-8h16"/></svg>
@@ -421,27 +227,15 @@
     <div class="modal-title">📝 Aggiungi serie</div>
     <div class="input-group">
       <label>Esercizio</label>
-      <input type="text" id="newExercise" placeholder="es. Panca piana, Squat..." list="exerciseSuggestions" />
+      <input type="text" id="newExercise" placeholder="es. Panca piana, Squat…" list="exerciseSuggestions" />
       <datalist id="exerciseSuggestions"></datalist>
     </div>
     <div style="display:flex;gap:10px;">
-      <div class="input-group" style="flex:1">
-        <label>Peso (kg)</label>
-        <input type="number" id="newWeight" placeholder="80" min="0" step="0.5" />
-      </div>
-      <div class="input-group" style="flex:1">
-        <label>Reps</label>
-        <input type="number" id="newReps" placeholder="8" min="1" />
-      </div>
+      <div class="input-group" style="flex:1"><label>Peso (kg)</label><input type="number" id="newWeight" placeholder="80" min="0" step="0.5" /></div>
+      <div class="input-group" style="flex:1"><label>Reps</label><input type="number" id="newReps" placeholder="8" min="1" /></div>
     </div>
-    <div class="input-group">
-      <label>Serie</label>
-      <input type="number" id="newSets" placeholder="3" min="1" />
-    </div>
-    <div class="input-group">
-      <label>Data</label>
-      <input type="date" id="newDate" />
-    </div>
+    <div class="input-group"><label>Serie</label><input type="number" id="newSets" placeholder="3" min="1" /></div>
+    <div class="input-group"><label>Data</label><input type="date" id="newDate" /></div>
     <button class="btn" onclick="saveLog()">Salva</button>
     <div style="height:10px"></div>
     <button class="btn secondary" onclick="closeModal('addLog')">Annulla</button>
@@ -451,10 +245,7 @@
 <div class="modal-overlay" id="modal-addPerson">
   <div class="modal">
     <div class="modal-title">👤 Aggiungi persona</div>
-    <div class="input-group">
-      <label>Nome</label>
-      <input type="text" id="newPersonName" placeholder="Mario Rossi" />
-    </div>
+    <div class="input-group"><label>Nome</label><input type="text" id="newPersonName" placeholder="Mario Rossi" /></div>
     <button class="btn" onclick="savePerson()">Aggiungi</button>
     <div style="height:10px"></div>
     <button class="btn secondary" onclick="closeModal('addPerson')">Annulla</button>
@@ -470,340 +261,213 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script>
-// ── STATE ──────────────────────────────────────────────────────────────
-let state = {
-  persons: [],      // [{id, name}]
-  logs: [],         // [{id, personId, exercise, weight, reps, sets, date}]
-  currentPerson: null,
-};
 
-function save() { localStorage.setItem('gymtrack_v2', JSON.stringify(state)); }
-function load() {
-  const raw = localStorage.getItem('gymtrack_v2');
-  if (raw) state = JSON.parse(raw);
-  if (!state.persons) state.persons = [];
-  if (!state.logs) state.logs = [];
-}
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, doc, addDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-// ── INIT ───────────────────────────────────────────────────────────────
-load();
-if (state.persons.length === 0) {
-  state.persons.push({ id: uid(), name: 'Io' });
-  save();
-}
-if (!state.currentPerson || !state.persons.find(p => p.id === state.currentPerson)) {
-  state.currentPerson = state.persons[0].id;
-}
+  const firebaseConfig = {
+    apiKey: "AIzaSyC25vfkc0C22e2OX5gha98sYDnA0l43NFA",
+    authDomain: "gymtrack-46ba3.firebaseapp.com",
+    projectId: "gymtrack-46ba3",
+    storageBucket: "gymtrack-46ba3.firebasestorage.app",
+    messagingSenderId: "136667175802",
+    appId: "1:136667175802:web:0b37db840dd8befb5d54c3"
+  };
 
-document.getElementById('newDate').value = today();
+  const fbApp = initializeApp(firebaseConfig);
+  const db = getFirestore(fbApp);
 
-render();
+  let persons = [];
+  let logs = [];
+  let currentPerson = localStorage.getItem('gymtrack_person') || null;
+  let chartInstance = null;
 
-// ── UTILS ──────────────────────────────────────────────────────────────
-function uid() { return Math.random().toString(36).slice(2) + Date.now().toString(36); }
-function today() { return new Date().toISOString().split('T')[0]; }
-function fmtDate(d) {
-  const [y,m,dd] = d.split('-');
-  return `${dd}/${m}/${y}`;
-}
-function currentLogs() { return state.logs.filter(l => l.personId === state.currentPerson); }
-
-// ── PAGES ──────────────────────────────────────────────────────────────
-function showPage(id, btn) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  btn.classList.add('active');
-  if (id === 'charts') renderChartPage();
-  if (id === 'history') renderHistory();
-  if (id === 'log') renderToday();
-}
-
-// ── RENDER ─────────────────────────────────────────────────────────────
-function render() {
-  renderPersonBar();
-  renderToday();
-  renderHistory();
-  populateSuggestions();
-}
-
-function renderPersonBar() {
-  const bar = document.getElementById('personBar');
-  bar.innerHTML = state.persons.map(p => `
-    <div class="person-chip ${p.id === state.currentPerson ? 'active' : ''}"
-         onclick="selectPerson('${p.id}')">${p.name}</div>
-  `).join('') + `
-    <div class="person-chip add-btn" onclick="openModal('addPerson')">+ Persona</div>
-  `;
-}
-
-function renderToday() {
-  const list = document.getElementById('todayList');
-  const todayStr = today();
-  const logs = currentLogs().filter(l => l.date === todayStr);
-
-  if (logs.length === 0) {
-    list.innerHTML = `<div class="empty">
-      <div class="empty-icon">🏋️</div>
-      <h3>Nessun esercizio oggi</h3>
-      <p>Tocca "+ Aggiungi" per iniziare<br>il tuo allenamento di oggi.</p>
-    </div>`;
-    return;
+  function setSync(state, label) {
+    document.getElementById('syncDot').className = 'sync-dot ' + state;
+    document.getElementById('syncLabel').textContent = label;
   }
 
-  const grouped = {};
-  logs.forEach(l => {
-    if (!grouped[l.exercise]) grouped[l.exercise] = [];
-    grouped[l.exercise].push(l);
-  });
-
-  list.innerHTML = Object.entries(grouped).map(([ex, entries]) => {
-    const last = entries[entries.length - 1];
-    const prev = bestBefore(ex, todayStr);
-    const diff = prev ? last.weight - prev : null;
-    const diffHtml = diff !== null
-      ? `<span class="${diff >= 0 ? 'trend-up' : 'trend-down'}">${diff >= 0 ? '▲' : '▼'} ${Math.abs(diff)} kg vs prev</span>`
-      : '';
-    const rows = entries.map(e =>
-      `<div class="log-item">
-        <div><div class="log-val">${e.weight} <span>kg</span></div><div class="log-date">${e.sets}x${e.reps} reps</div></div>
-        <button class="icon-btn" onclick="deleteLog('${e.id}')">
-          <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
-        </button>
-      </div>`
-    ).join('');
-    return `<div class="card">
-      <div class="card-row">
-        <div>
-          <div class="card-name">${ex}</div>
-          <div class="card-sub">${entries.length} serie ${diffHtml}</div>
-        </div>
-        <div class="badge">${last.weight} kg</div>
-      </div>
-      <div style="margin-top:12px">${rows}</div>
-    </div>`;
-  }).join('');
-}
-
-function bestBefore(exercise, dateStr) {
-  const prev = currentLogs()
-    .filter(l => l.exercise === exercise && l.date < dateStr)
-    .sort((a,b) => b.date.localeCompare(a.date));
-  return prev.length ? prev[0].weight : null;
-}
-
-function renderHistory() {
-  const list = document.getElementById('exerciseList');
-  const logs = currentLogs();
-  if (logs.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><h3>Nessuno storico</h3><p>Aggiungi il tuo primo allenamento dalla scheda "Oggi".</p></div>`;
-    return;
+  function today() { return new Date().toISOString().split('T')[0]; }
+  function fmtDate(d) { const [y,m,dd] = d.split('-'); return `${dd}/${m}/${y}`; }
+  function currentLogs() { return logs.filter(l => l.personId === currentPerson); }
+  function bestBefore(exercise, dateStr) {
+    const prev = currentLogs().filter(l => l.exercise === exercise && l.date < dateStr).sort((a,b) => b.date.localeCompare(a.date));
+    return prev.length ? prev[0].weight : null;
   }
-  const exercises = [...new Set(logs.map(l => l.exercise))].sort();
-  list.innerHTML = exercises.map(ex => {
-    const exLogs = logs.filter(l => l.exercise === ex).sort((a,b) => b.date.localeCompare(a.date));
-    const pr = Math.max(...exLogs.map(l => l.weight));
-    const last = exLogs[0];
-    return `<div class="card" onclick="showDetail('${ex}')" style="cursor:pointer">
-      <div class="card-row">
-        <div>
-          <div class="card-name">${ex}</div>
-          <div class="card-sub">${exLogs.length} sessioni · ultimo ${fmtDate(last.date)}</div>
-        </div>
-        <div>
-          <div class="badge" style="background:var(--accent2);color:var(--bg)">PR ${pr} kg</div>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
 
-function showDetail(exercise) {
-  const logs = currentLogs().filter(l => l.exercise === exercise).sort((a,b) => b.date.localeCompare(a.date));
-  const pr = Math.max(...logs.map(l => l.weight));
-  const last = logs[0];
-  document.getElementById('detailTitle').textContent = exercise;
-  document.getElementById('detailContent').innerHTML = `
-    <div class="pr-row" style="margin-bottom:16px">
-      <div class="pr-box"><div class="val">${pr} kg</div><div class="lbl">Record (PR)</div></div>
-      <div class="pr-box"><div class="val">${last.weight} kg</div><div class="lbl">Ultima volta</div></div>
-      <div class="pr-box"><div class="val">${logs.length}</div><div class="lbl">Sessioni</div></div>
-    </div>
-    <div class="section-label">Storico</div>
-    ${logs.map(l => `
-      <div class="log-item">
-        <div class="log-date">${fmtDate(l.date)}</div>
-        <div class="log-val">${l.weight} kg <span>${l.sets}x${l.reps}</span></div>
-      </div>
-    `).join('')}
-    <div style="height:16px"></div>
-  `;
-  openModal('exerciseDetail');
-}
-
-// ── CHARTS ─────────────────────────────────────────────────────────────
-let chartInstance = null;
-
-function renderChartPage() {
-  const sel = document.getElementById('chartExerciseSelect');
-  const exercises = [...new Set(currentLogs().map(l => l.exercise))].sort();
-  sel.innerHTML = exercises.length
-    ? exercises.map(e => `<option value="${e}">${e}</option>`).join('')
-    : '<option value="">Nessun dato ancora</option>';
-  renderChart();
-}
-
-function renderChart() {
-  const area = document.getElementById('chartArea');
-  const exercise = document.getElementById('chartExerciseSelect').value;
-  if (!exercise) { area.innerHTML = `<div class="empty"><div class="empty-icon">📈</div><h3>Nessun dato</h3><p>Aggiungi degli allenamenti per vedere i tuoi progressi.</p></div>`; return; }
-
-  const logs = currentLogs()
-    .filter(l => l.exercise === exercise)
-    .sort((a,b) => a.date.localeCompare(b.date));
-
-  // Group by date, take max weight per day
-  const byDate = {};
-  logs.forEach(l => {
-    if (!byDate[l.date] || l.weight > byDate[l.date]) byDate[l.date] = l.weight;
-  });
-
-  const labels = Object.keys(byDate).map(fmtDate);
-  const data = Object.values(byDate);
-  const pr = Math.max(...data);
-  const first = data[0], last2 = data[data.length - 1];
-  const progress = last2 - first;
-
-  area.innerHTML = `
-    <div class="pr-row" style="margin-bottom:14px">
-      <div class="pr-box"><div class="val">${pr} kg</div><div class="lbl">Record</div></div>
-      <div class="pr-box"><div class="val ${progress >= 0 ? 'trend-up' : 'trend-down'}">${progress >= 0 ? '+' : ''}${progress} kg</div><div class="lbl">Progresso</div></div>
-      <div class="pr-box"><div class="val">${data.length}</div><div class="lbl">Sessioni</div></div>
-    </div>
-    <div class="chart-wrap">
-      <div class="chart-title">${exercise}</div>
-      <div class="chart-meta">Peso massimo per sessione (kg)</div>
-      <canvas id="myChart" height="200"></canvas>
-    </div>
-  `;
-
-  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-
-  const ctx = document.getElementById('myChart').getContext('2d');
-  chartInstance = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Peso (kg)',
-        data,
-        borderColor: '#c8f55a',
-        backgroundColor: 'rgba(200,245,90,0.08)',
-        pointBackgroundColor: '#c8f55a',
-        pointBorderColor: '#0a0a0f',
-        pointBorderWidth: 2,
-        pointRadius: 5,
-        tension: 0.35,
-        fill: true,
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { display: false },
-        tooltip: {
-          backgroundColor: '#1c1c28',
-          borderColor: '#2a2a3a',
-          borderWidth: 1,
-          titleColor: '#7a7a9a',
-          bodyColor: '#c8f55a',
-          bodyFont: { family: 'Space Mono', size: 14 },
-          callbacks: { label: ctx => ` ${ctx.raw} kg` }
-        }
-      },
-      scales: {
-        x: {
-          ticks: { color: '#7a7a9a', font: { family: 'Space Mono', size: 10 }, maxRotation: 45 },
-          grid: { color: '#2a2a3a' }
-        },
-        y: {
-          ticks: { color: '#7a7a9a', font: { family: 'Space Mono', size: 11 }, callback: v => v + ' kg' },
-          grid: { color: '#2a2a3a' }
-        }
+  // ── REAL-TIME LISTENERS ────────────────────────────────────────────
+  onSnapshot(collection(db, 'persons'), snap => {
+    persons = snap.docs.map(d => ({ id: d.id, ...d.data() })).sort((a,b) => (a.createdAt||0)-(b.createdAt||0));
+    if (!currentPerson || !persons.find(p => p.id === currentPerson)) {
+      if (persons.length === 0) {
+        // Auto-create first person
+        addDoc(collection(db, 'persons'), { name: 'Io', createdAt: Date.now() });
+        return;
       }
+      currentPerson = persons[0].id;
+      localStorage.setItem('gymtrack_person', currentPerson);
     }
-  });
-}
+    document.getElementById('loadingScreen').style.display = 'none';
+    setSync('ok', 'sincronizzato');
+    renderPersonBar(); renderToday(); renderHistory(); populateSuggestions();
+  }, err => { setSync('err', 'errore connessione'); document.getElementById('loadingScreen').style.display = 'none'; });
 
-// ── ACTIONS ────────────────────────────────────────────────────────────
-function saveLog() {
-  const exercise = document.getElementById('newExercise').value.trim();
-  const weight = parseFloat(document.getElementById('newWeight').value);
-  const reps = parseInt(document.getElementById('newReps').value);
-  const sets = parseInt(document.getElementById('newSets').value) || 1;
-  const date = document.getElementById('newDate').value || today();
+  onSnapshot(query(collection(db, 'logs'), orderBy('date', 'asc')), snap => {
+    logs = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    setSync('ok', 'sincronizzato');
+    renderToday(); renderHistory(); populateSuggestions();
+    if (document.getElementById('page-charts').classList.contains('active')) renderChartPage();
+  }, err => { setSync('err', 'errore connessione'); });
 
-  if (!exercise || isNaN(weight) || isNaN(reps)) {
-    alert('Inserisci esercizio, peso e reps!'); return;
+  // ── RENDER ─────────────────────────────────────────────────────────
+  window.showPage = (id, btn) => {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('page-' + id).classList.add('active');
+    btn.classList.add('active');
+    if (id === 'charts') renderChartPage();
+    if (id === 'history') renderHistory();
+    if (id === 'log') renderToday();
+  };
+
+  function renderPersonBar() {
+    document.getElementById('personBar').innerHTML =
+      persons.map(p => `<div class="person-chip ${p.id===currentPerson?'active':''}" onclick="selectPerson('${p.id}')">${p.name}</div>`).join('')
+      + `<div class="person-chip add-btn" onclick="openModal('addPerson')">+ Persona</div>`;
   }
 
-  state.logs.push({ id: uid(), personId: state.currentPerson, exercise, weight, reps, sets, date });
-  save();
-  populateSuggestions();
-  closeModal('addLog');
-  // clear fields except date
-  document.getElementById('newExercise').value = '';
-  document.getElementById('newWeight').value = '';
-  document.getElementById('newReps').value = '';
-  document.getElementById('newSets').value = '';
-  renderToday();
-  renderHistory();
-}
+  function renderToday() {
+    const list = document.getElementById('todayList');
+    const t = today();
+    const todayLogs = currentLogs().filter(l => l.date === t);
+    if (!todayLogs.length) { list.innerHTML = `<div class="empty"><div class="empty-icon">🏋️</div><h3>Nessun esercizio oggi</h3><p>Tocca "+ Aggiungi" per iniziare.</p></div>`; return; }
+    const grouped = {};
+    todayLogs.forEach(l => { if (!grouped[l.exercise]) grouped[l.exercise]=[]; grouped[l.exercise].push(l); });
+    list.innerHTML = Object.entries(grouped).map(([ex, entries]) => {
+      const last = entries[entries.length-1];
+      const prev = bestBefore(ex, t);
+      const diff = prev !== null ? last.weight - prev : null;
+      const diffHtml = diff !== null ? `<span class="${diff>=0?'trend-up':'trend-down'}">${diff>=0?'▲':'▼'} ${Math.abs(diff)} kg</span>` : '';
+      const rows = entries.map(e => `<div class="log-item"><div><div class="log-val">${e.weight} <span>kg</span></div><div class="log-date">${e.sets||1}x${e.reps} reps</div></div><button class="icon-btn" onclick="deleteLog('${e.id}')"><svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg></button></div>`).join('');
+      return `<div class="card"><div class="card-row"><div><div class="card-name">${ex}</div><div class="card-sub">${entries.length} serie ${diffHtml}</div></div><div class="badge">${last.weight} kg</div></div><div style="margin-top:12px">${rows}</div></div>`;
+    }).join('');
+  }
 
-function deleteLog(id) {
-  if (!confirm('Eliminare questa serie?')) return;
-  state.logs = state.logs.filter(l => l.id !== id);
-  save();
-  renderToday();
-  renderHistory();
-}
+  function renderHistory() {
+    const list = document.getElementById('exerciseList');
+    const myLogs = currentLogs();
+    if (!myLogs.length) { list.innerHTML = `<div class="empty"><div class="empty-icon">📋</div><h3>Nessuno storico</h3><p>Aggiungi il tuo primo allenamento.</p></div>`; return; }
+    const exercises = [...new Set(myLogs.map(l => l.exercise))].sort();
+    list.innerHTML = exercises.map(ex => {
+      const exLogs = myLogs.filter(l => l.exercise===ex).sort((a,b) => b.date.localeCompare(a.date));
+      const pr = Math.max(...exLogs.map(l => l.weight));
+      return `<div class="card" onclick="showDetail('${ex}')" style="cursor:pointer"><div class="card-row"><div><div class="card-name">${ex}</div><div class="card-sub">${exLogs.length} sessioni · ultimo ${fmtDate(exLogs[0].date)}</div></div><div class="badge" style="background:var(--accent2);color:var(--bg)">PR ${pr} kg</div></div></div>`;
+    }).join('');
+  }
 
-function savePerson() {
-  const name = document.getElementById('newPersonName').value.trim();
-  if (!name) { alert('Inserisci un nome!'); return; }
-  const person = { id: uid(), name };
-  state.persons.push(person);
-  state.currentPerson = person.id;
-  save();
-  document.getElementById('newPersonName').value = '';
-  closeModal('addPerson');
-  render();
-}
+  window.showDetail = ex => {
+    const myLogs = currentLogs().filter(l => l.exercise===ex).sort((a,b) => b.date.localeCompare(a.date));
+    const pr = Math.max(...myLogs.map(l => l.weight));
+    document.getElementById('detailTitle').textContent = ex;
+    document.getElementById('detailContent').innerHTML = `
+      <div class="pr-row" style="margin-bottom:16px">
+        <div class="pr-box"><div class="val">${pr} kg</div><div class="lbl">Record</div></div>
+        <div class="pr-box"><div class="val">${myLogs[0].weight} kg</div><div class="lbl">Ultima</div></div>
+        <div class="pr-box"><div class="val">${myLogs.length}</div><div class="lbl">Sessioni</div></div>
+      </div>
+      <div class="section-label">Storico</div>
+      ${myLogs.map(l => `<div class="log-item"><div class="log-date">${fmtDate(l.date)}</div><div class="log-val">${l.weight} kg <span>${l.sets||1}x${l.reps}</span></div></div>`).join('')}
+      <div style="height:16px"></div>`;
+    openModal('exerciseDetail');
+  };
 
-function selectPerson(id) {
-  state.currentPerson = id;
-  save();
-  render();
-}
+  // ── CHARTS ─────────────────────────────────────────────────────────
+  function renderChartPage() {
+    const sel = document.getElementById('chartExerciseSelect');
+    const exercises = [...new Set(currentLogs().map(l => l.exercise))].sort();
+    sel.innerHTML = exercises.length ? exercises.map(e => `<option value="${e}">${e}</option>`).join('') : '<option value="">Nessun dato ancora</option>';
+    renderChart();
+  }
 
-function populateSuggestions() {
-  const all = [...new Set(state.logs.map(l => l.exercise))].sort();
-  document.getElementById('exerciseSuggestions').innerHTML = all.map(e => `<option value="${e}">`).join('');
-}
+  window.renderChart = () => {
+    const area = document.getElementById('chartArea');
+    const exercise = document.getElementById('chartExerciseSelect').value;
+    if (!exercise) { area.innerHTML = `<div class="empty"><div class="empty-icon">📈</div><h3>Nessun dato</h3><p>Aggiungi allenamenti per vedere i progressi.</p></div>`; return; }
+    const myLogs = currentLogs().filter(l => l.exercise===exercise).sort((a,b) => a.date.localeCompare(b.date));
+    const byDate = {};
+    myLogs.forEach(l => { if (!byDate[l.date] || l.weight > byDate[l.date]) byDate[l.date] = l.weight; });
+    const labels = Object.keys(byDate).map(fmtDate);
+    const data = Object.values(byDate);
+    const pr = Math.max(...data);
+    const progress = data[data.length-1] - data[0];
+    area.innerHTML = `
+      <div class="pr-row" style="margin-bottom:14px">
+        <div class="pr-box"><div class="val">${pr} kg</div><div class="lbl">Record</div></div>
+        <div class="pr-box"><div class="val ${progress>=0?'trend-up':'trend-down'}">${progress>=0?'+':''}${progress} kg</div><div class="lbl">Progresso</div></div>
+        <div class="pr-box"><div class="val">${data.length}</div><div class="lbl">Sessioni</div></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">${exercise}</div>
+        <div class="chart-meta">Peso massimo per sessione (kg)</div>
+        <canvas id="myChart" height="200"></canvas>
+      </div>`;
+    if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+    chartInstance = new Chart(document.getElementById('myChart').getContext('2d'), {
+      type: 'line',
+      data: { labels, datasets: [{ label: 'Peso', data, borderColor: '#c8f55a', backgroundColor: 'rgba(200,245,90,0.08)', pointBackgroundColor: '#c8f55a', pointBorderColor: '#0a0a0f', pointBorderWidth: 2, pointRadius: 5, tension: 0.35, fill: true }] },
+      options: { responsive: true, plugins: { legend: { display: false }, tooltip: { backgroundColor: '#1c1c28', borderColor: '#2a2a3a', borderWidth: 1, titleColor: '#7a7a9a', bodyColor: '#c8f55a', bodyFont: { family: 'Space Mono', size: 14 }, callbacks: { label: c => ` ${c.raw} kg` } } }, scales: { x: { ticks: { color: '#7a7a9a', font: { family: 'Space Mono', size: 10 }, maxRotation: 45 }, grid: { color: '#2a2a3a' } }, y: { ticks: { color: '#7a7a9a', font: { family: 'Space Mono', size: 11 }, callback: v => v+' kg' }, grid: { color: '#2a2a3a' } } } }
+    });
+  };
 
-// ── MODALS ─────────────────────────────────────────────────────────────
-function openModal(id) {
-  document.getElementById('modal-' + id).classList.add('open');
-  if (id === 'addLog') document.getElementById('newDate').value = today();
-}
-function closeModal(id) { document.getElementById('modal-' + id).classList.remove('open'); }
+  // ── ACTIONS ────────────────────────────────────────────────────────
+  window.saveLog = async () => {
+    const exercise = document.getElementById('newExercise').value.trim();
+    const weight = parseFloat(document.getElementById('newWeight').value);
+    const reps = parseInt(document.getElementById('newReps').value);
+    const sets = parseInt(document.getElementById('newSets').value) || 1;
+    const date = document.getElementById('newDate').value || today();
+    if (!exercise || isNaN(weight) || isNaN(reps)) { alert('Inserisci esercizio, peso e reps!'); return; }
+    setSync('loading', 'salvataggio…');
+    try {
+      await addDoc(collection(db, 'logs'), { personId: currentPerson, exercise, weight, reps, sets, date, createdAt: Date.now() });
+      closeModal('addLog');
+      ['newExercise','newWeight','newReps','newSets'].forEach(id => document.getElementById(id).value = '');
+    } catch(e) { setSync('err', 'errore'); alert('Errore: ' + e.message); }
+  };
 
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', e => {
-    if (e.target === overlay) overlay.classList.remove('open');
-  });
-});
+  window.deleteLog = async id => {
+    if (!confirm('Eliminare questa serie?')) return;
+    setSync('loading', 'eliminazione…');
+    try { await deleteDoc(doc(db, 'logs', id)); } catch(e) { setSync('err', 'errore'); }
+  };
+
+  window.savePerson = async () => {
+    const name = document.getElementById('newPersonName').value.trim();
+    if (!name) { alert('Inserisci un nome!'); return; }
+    setSync('loading', 'salvataggio…');
+    try {
+      const ref = await addDoc(collection(db, 'persons'), { name, createdAt: Date.now() });
+      currentPerson = ref.id;
+      localStorage.setItem('gymtrack_person', currentPerson);
+      document.getElementById('newPersonName').value = '';
+      closeModal('addPerson');
+    } catch(e) { setSync('err', 'errore'); alert('Errore: ' + e.message); }
+  };
+
+  window.selectPerson = id => {
+    currentPerson = id;
+    localStorage.setItem('gymtrack_person', id);
+    renderPersonBar(); renderToday(); renderHistory(); populateSuggestions();
+  };
+
+  function populateSuggestions() {
+    document.getElementById('exerciseSuggestions').innerHTML = [...new Set(logs.map(l => l.exercise))].sort().map(e => `<option value="${e}">`).join('');
+  }
+
+  window.openModal = id => { document.getElementById('modal-'+id).classList.add('open'); if (id==='addLog') document.getElementById('newDate').value = today(); };
+  window.closeModal = id => { document.getElementById('modal-'+id).classList.remove('open'); };
+  document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target===o) o.classList.remove('open'); }));
 </script>
 </body>
 </html>
