@@ -748,7 +748,71 @@ window.drawChart = ()=>{
       <canvas id="myChart" height="220"></canvas>
     </div>`;
   if(chartInst){chartInst.destroy();chartInst=null;}
-  chartInst=new Chart(document.getElementById('myChart').getContext('2d'),{data:{labels,datasets:[{type:'line',label:'Carico',data:weights,yAxisID:'yKg',borderColor:'#E30613',backgroundColor:'rgba(227,6,19,0.50)',pointBackgroundColor:'#E30613',pointBorderColor:'#1c1c1c',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7,borderWidth:2.5,tension:0.3,fill:true,order:1},{type:'line',label:'Reps',data:reps,yAxisID:'yReps',borderColor:'#aaaaaa',backgroundColor:'rgba(170,170,170,0.04)',pointBackgroundColor:'#aaaaaa',pointBorderColor:'#1c1c1c',pointBorderWidth:2,pointRadius:4,pointHoverRadius:6,borderWidth:2,tension:0.3,fill:true,borderDash:[5,3],order:2}]},options:{responsive:true,interaction:{mode:'index',intersect:false},plugins:{legend:{display:false},tooltip:{backgroundColor:'#252525',borderColor:'#3d3d3d',borderWidth:1,titleColor:'#888',titleFont:{family:'Barlow',size:11,weight:'600'},padding:10,callbacks:{label:c=>c.dataset.yAxisID==='yKg'?`  Carico: ${c.raw} kg`:`  Reps: ${c.raw}`}}},scales:{x:{ticks:{color:'#666',font:{family:'Barlow',size:10},maxRotation:45},grid:{color:'#222'},border:{color:'#333'}},yKg:{type:'linear',position:'left',ticks:{color:'#E30613',font:{family:'Barlow',size:11},callback:v=>v+' kg'},grid:{color:'#222'},border:{color:'#333'},title:{display:true,text:'kg',color:'#E30613',font:{family:'Barlow',size:11,weight:'700'}}},yReps:{type:'linear',position:'right',ticks:{color:'#aaa',font:{family:'Barlow',size:11},callback:v=>v+' rep'},grid:{drawOnChartArea:false},border:{color:'#333'},title:{display:true,text:'reps',color:'#aaa',font:{family:'Barlow',size:11,weight:'700'}}}}}});
+  chartInst=new Chart(document.getElementById('myChart').getContext('2d'),{
+    data:{labels,datasets:[{
+      type:'line',
+      label:'Carico',
+      data:weights,
+      yAxisID:'yKg',
+      borderColor:'#E30613',
+      backgroundColor:'rgba(227,6,19,0.10)',
+      pointBackgroundColor:'#E30613',
+      pointBorderColor:'#1c1c1c',
+      pointBorderWidth:2,
+      pointRadius:5,
+      pointHoverRadius:7,
+      borderWidth:2.5,
+      tension:0.3,
+      fill:true,
+      order:1},{
+      type:'line',
+      label:'Reps',
+      data:reps,
+      yAxisID:'yReps',
+      borderColor:'#aaaaaa',
+      backgroundColor:'rgba(170,170,170,0.04)',
+      pointBackgroundColor:'#aaaaaa',
+      pointBorderColor:'#1c1c1c',
+      pointBorderWidth:2,
+      pointRadius:4,
+      pointHoverRadius:6,
+      borderWidth:2,
+      tension:0.3,
+      fill:true,
+      borderDash:[5,3],
+      order:2}]},
+  options:{
+    responsive:true,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#252525',
+        borderColor:'#3d3d3d',
+        borderWidth:1,
+        titleColor:'#888',
+        titleFont:{family:'Barlow',size:11,weight:'600'},
+        padding:10,
+        callbacks:{label:c=>c.dataset.yAxisID==='yKg'?`  Carico: ${c.raw} kg`:`  Reps: ${c.raw}`}}},
+    scales:{
+      x:{
+        ticks:{color:'#666',font:{family:'Barlow',size:10},maxRotation:45},
+        grid:{color:'#222'},
+        border:{color:'#333'}},
+      yKg:{
+        type:'linear',
+        position:'left',
+        ticks:{stepSize: 0.5,color:'#E30613',font:{family:'Barlow',size:11},callback:v=>v+' kg'},
+        grid:{color:'#222'},
+        border:{color:'#333'},
+        title:{display:true,text:'kg',color:'#E30613',font:{family:'Barlow',size:11,weight:'700'}}},
+      yReps:{
+        type:'linear',
+        position:'right',
+        ticks:{stepSize: 1,color:'#aaa',font:{family:'Barlow',size:11},callback:v=>v+' rep'},
+        grid:{drawOnChartArea:false},
+        border:{color:'#333'},
+        title:{display:true,text:'reps',color:'#aaa',font:{family:'Barlow',size:11,weight:'700'}}}}}});
 };
 
 /* ═══════════════════════════════════════════════════
